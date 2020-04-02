@@ -7,14 +7,14 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class AppConfig {
-    @Bean
-    public DBliveryService createService() {
-        DBliveryRepository repository = this.createRepository();
-        return new DBliveryServiceImpl(repository);
-    }
+	@Bean
+	public DBliveryService createService() {
+		DBliveryRepository repository = this.createRepository();
+		return new DBliveryServiceImpl(repository);
+	}
 
-    @Bean
-    public DBliveryRepository createRepository() {
-        return new DBliveryRepository();
-    }
+	@Bean
+	public DBliveryRepository createRepository() {
+		return new DBliveryRepository();
+	}
 }

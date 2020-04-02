@@ -15,9 +15,17 @@ import ar.edu.unlp.info.bd2.repositories.DBliveryRepository;
 public class DBliveryServiceImpl implements DBliveryService {
 
 	private DBliveryRepository repository;
-	
+
 	public DBliveryServiceImpl(DBliveryRepository repository) {
 		this.setRepository(repository);
+	}
+
+	public DBliveryRepository getRepository() {
+		return repository;
+	}
+
+	public void setRepository(DBliveryRepository repository) {
+		this.repository = repository;
 	}
 
 	@Override
@@ -134,11 +142,4 @@ public class DBliveryServiceImpl implements DBliveryService {
 		return null;
 	}
 
-	public DBliveryRepository getRepository() {
-		return repository;
-	}
-
-	public void setRepository(DBliveryRepository repository) {
-		this.repository = repository;
-	}
 }
