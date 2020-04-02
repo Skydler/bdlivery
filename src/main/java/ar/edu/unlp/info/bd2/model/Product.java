@@ -1,19 +1,55 @@
 package ar.edu.unlp.info.bd2.model;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
+import javax.persistence.Table;
+
+@Entity
+@Table(name = "Products")
 public class Product {
-	
-	private String name;
-	
-	private Float weight;
-	
-	private Supplier supplier;
-	
-	private ArrayList<Price> prices = new ArrayList<Price>();
 
-	public Supplier getSupplier() {
-		return supplier;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long id;
+
+	@Column(nullable = false)
+	private String name;
+
+	@Column(nullable = false)
+	private Float weight;
+
+	@OneToOne()
+	private Supplier supplier;
+
+	@OneToMany()
+	private List<Price> prices;
+
+	public Product(String name, Float weight, Float currentPrice, Supplier supplier) {
+		this.name = name;
+		this.weight = weight;
+		this.supplier = supplier;
+		this.prices = new ArrayList<Price>();
+
+		Date currentDate = Calendar.getInstance().getTime();
+		this.addPrice(currentPrice, currentDate);
+	}
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
 	}
 
 	public String getName() {
@@ -32,19 +68,30 @@ public class Product {
 		this.weight = weight;
 	}
 
-	public ArrayList<Price> getPrices() {
+	public List<Price> getPrices() {
 		return prices;
 	}
 
-	public void setPrices(ArrayList<Price> prices) {
+	public void setPrices(List<Price> prices) {
 		this.prices = prices;
+	}
+
+	public Supplier getSupplier() {
+		return supplier;
 	}
 
 	public void setSupplier(Supplier supplier) {
 		this.supplier = supplier;
 	}
 
-	
-	
-	
+	public Float getPrice() {
+		Price price = prices.get(prices.size() - 1);
+		return price.getValue();
+	}
+
+	private void addPrice(Float value, Date currentDate) {
+		Price newPrice = new Price(value, currentDate);
+		prices.add(newPrice);
+	}
+
 }

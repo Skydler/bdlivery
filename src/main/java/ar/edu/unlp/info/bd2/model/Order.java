@@ -1,25 +1,71 @@
 package ar.edu.unlp.info.bd2.model;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Date;
 
-public class Order {
-	
-	private Date orderDate;
-	
-	private String address;
-	
-	private Float coordX;
-	
-	private Float coordY;
-	
-	private ArrayList<Items> items = new ArrayList<Items> ();
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
-	private ArrayList<OrderStatus> statesRecord = new ArrayList<OrderStatus>();
-	
+@Entity
+@Table(name = "Orders")
+public class Order {
+
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long id;
+
+	@Temporal(TemporalType.TIMESTAMP)
+	@Column(nullable = false)
+	private Date orderDate;
+
+	@Column(nullable = false)
+	private String address;
+
+	@Column(nullable = false)
+	private Float coordX;
+
+	@Column(nullable = false)
+	private Float coordY;
+
+	@OneToMany(cascade = CascadeType.ALL)
+	private List<Item> items;
+
+	@OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
+	private List<OrderStatus> statesRecord;
+
+	@ManyToOne()
 	private User client;
-	
+
+	@ManyToOne()
 	private User delivery;
+
+	public Order(Date orderDate, String address, Float coordX, Float coordY, User client) {
+		this.orderDate = orderDate;
+		this.address = address;
+		this.coordX = coordX;
+		this.coordY = coordY;
+		this.client = client;
+		this.statesRecord = new ArrayList<OrderStatus>();
+		this.statesRecord.add(new Pending(this));
+	}
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
 
 	public Date getOrderDate() {
 		return orderDate;
@@ -53,19 +99,19 @@ public class Order {
 		this.coordY = coordY;
 	}
 
-	public ArrayList<Items> getItems() {
+	public List<Item> getProducts() {
 		return items;
 	}
 
-	public void setItems(ArrayList<Items> items) {
+	public void setProducts(ArrayList<Item> items) {
 		this.items = items;
 	}
 
-	public ArrayList<OrderStatus> getStatesRecord() {
+	public List<OrderStatus> getStatus() {
 		return statesRecord;
 	}
 
-	public void setStatesRecord(ArrayList<OrderStatus> statesRecord) {
+	public void setStatus(ArrayList<OrderStatus> statesRecord) {
 		this.statesRecord = statesRecord;
 	}
 
@@ -77,16 +123,12 @@ public class Order {
 		this.client = client;
 	}
 
-	public User getDelivery() {
+	public User getDeliveryUser() {
 		return delivery;
 	}
 
-	public void setDelivery(User delivery) {
+	public void setDeliveryUser(User delivery) {
 		this.delivery = delivery;
 	}
-	
-	
-	
-	
-	
+
 }
