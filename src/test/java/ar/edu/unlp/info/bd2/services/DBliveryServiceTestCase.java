@@ -24,7 +24,7 @@ import java.util.Optional;
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = {AppConfig.class, HibernateConfiguration.class}, loader = AnnotationConfigContextLoader.class)
 @Transactional
-@Rollback(true)
+@Rollback(false)
 public class DBliveryServiceTestCase {
 
     @Autowired
@@ -85,6 +85,7 @@ public class DBliveryServiceTestCase {
         assertEquals(u1,o2.getClient());
         assertEquals(1,o2.getProducts().size());
     }
+
     @Test
     public void testDeliverOrder() throws DBliveryException {
     	Calendar cal = Calendar.getInstance();
