@@ -30,6 +30,14 @@ public class Supplier {
 	@Column(nullable = false)
 	private Float coordY;
 
+	public Supplier(String name, Integer cuil, String address, Float coordX, Float coordY) {
+		this.name = name;
+		this.cuil = cuil;
+		this.address = address;
+		this.coordX = coordX;
+		this.coordY = coordY;
+	}
+
 	public Long getId() {
 		return id;
 	}
