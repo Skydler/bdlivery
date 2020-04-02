@@ -1,5 +1,6 @@
 package ar.edu.unlp.info.bd2.model;
 
+import java.util.ArrayList;
 import java.util.Date;
 
 public class User {
@@ -13,6 +14,8 @@ public class User {
 	private String email;
 	
 	private Date birthDate;
+	
+	private ArrayList<Order> orders = new ArrayList<Order>();
 
 	public String getUsername() {
 		return username;
@@ -53,9 +56,15 @@ public class User {
 	public void setBirthDate(Date birthDate) {
 		this.birthDate = birthDate;
 	}
+
+	public ArrayList<Order> getOrders() {
+		return orders;
+	}
+
+	public void setOrders(ArrayList<Order> orders) {
+		this.orders = orders;
+	}
 	
-	
-	
-	
+
 	
 }
