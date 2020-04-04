@@ -43,7 +43,7 @@ public class Product {
 		this.prices = new ArrayList<Price>();
 
 		Date currentDate = Calendar.getInstance().getTime();
-		this.addPrice(currentPrice, currentDate);
+		this.prices.add(new Price(currentPrice, currentDate));
 	}
 
 	public Product() {
@@ -99,6 +99,7 @@ public class Product {
 	}
 
 	public void addPrice(Float value, Date startDate) {
+		this.currentPrice().setEndDate(startDate);
 		Price newPrice = new Price(value, startDate);
 		this.prices.add(newPrice);
 	}

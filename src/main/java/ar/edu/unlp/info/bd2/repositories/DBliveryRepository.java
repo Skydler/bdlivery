@@ -1,6 +1,5 @@
 package ar.edu.unlp.info.bd2.repositories;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.TypedQuery;
