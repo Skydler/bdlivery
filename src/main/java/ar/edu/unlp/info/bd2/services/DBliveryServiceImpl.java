@@ -17,69 +17,69 @@ public class DBliveryServiceImpl implements DBliveryService {
 	private DBliveryRepository repository;
 
 	public DBliveryServiceImpl(DBliveryRepository repository) {
-		this.setRepository(repository);
-	}
-
-	public DBliveryRepository getRepository() {
-		return repository;
-	}
-
-	public void setRepository(DBliveryRepository repository) {
 		this.repository = repository;
 	}
 
 	@Override
 	public Product createProduct(String name, Float price, Float weight, Supplier supplier) {
-		// TODO Auto-generated method stub
-		return null;
+		Product prod = new Product(name, price, weight, supplier);
+		repository.saveObject(prod);
+		return prod;
 	}
 
 	@Override
 	public Supplier createSupplier(String name, String cuil, String address, Float coordX, Float coordY) {
-		// TODO Auto-generated method stub
-		return null;
+		Supplier supplier = new Supplier(name, cuil, address, coordX, coordY);
+		repository.saveObject(supplier);
+		return supplier;
 	}
 
 	@Override
 	public User createUser(String email, String password, String username, String name, Date dateOfBirth) {
-		// TODO Auto-generated method stub
-		return null;
+		User user = new User(email, password, username, name, dateOfBirth);
+		repository.saveObject(user);
+		return user;
 	}
 
 	@Override
 	public Product updateProductPrice(Long id, Float price, Date startDate) throws DBliveryException {
-		// TODO Auto-generated method stub
-		return null;
+		Product prod = (Product) repository.findById(Product.class, id);
+		if (prod == null) {
+			throw new DBliveryException("No existe el producto para el id dado");
+		}
+		prod.addPrice(price, startDate);
+		repository.saveObject(prod);
+		return prod;
 	}
 
 	@Override
 	public Optional<User> getUserById(Long id) {
-		// TODO Auto-generated method stub
-		return null;
+		User user = (User) repository.findById(User.class, id);
+		return Optional.of(user);
 	}
 
 	@Override
 	public Optional<User> getUserByEmail(String email) {
-		// TODO Auto-generated method stub
-		return null;
+		User user = repository.findByEmail(email);
+		return Optional.of(user);
 	}
 
 	@Override
 	public Optional<User> getUserByUsername(String username) {
-		// TODO Auto-generated method stub
-		return null;
+		User user = repository.findByUsername(username);
+		return Optional.of(user);
 	}
 
 	@Override
 	public Optional<Product> getProductById(Long id) {
-		// TODO Auto-generated method stub
-		return null;
+		Product prod = (Product) repository.findById(Product.class, id);
+		return Optional.of(prod);
 	}
 
 	@Override
 	public Optional<Order> getOrderById(Long id) {
-		// TODO Auto-generated method stub
-		return null;
+		Order order = (Order) repository.findById(Order.class, id);
+		return Optional.of(order);
 	}
 
 	@Override
