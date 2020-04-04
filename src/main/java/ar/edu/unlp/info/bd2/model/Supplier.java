@@ -19,7 +19,7 @@ public class Supplier {
 	private String name;
 
 	@Column(nullable = false)
-	private Integer cuil;
+	private String cuil;
 
 	@Column(nullable = false)
 	private String address;
@@ -30,7 +30,7 @@ public class Supplier {
 	@Column(nullable = false)
 	private Float coordY;
 
-	public Supplier(String name, Integer cuil, String address, Float coordX, Float coordY) {
+	public Supplier(String name, String cuil, String address, Float coordX, Float coordY) {
 		this.name = name;
 		this.cuil = cuil;
 		this.address = address;
@@ -54,11 +54,11 @@ public class Supplier {
 		this.name = name;
 	}
 
-	public Integer getCuil() {
+	public String getCuil() {
 		return cuil;
 	}
 
-	public void setCuil(Integer cuil) {
+	public void setCuil(String cuil) {
 		this.cuil = cuil;
 	}
 

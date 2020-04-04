@@ -5,6 +5,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -28,13 +29,13 @@ public class Product {
 	@Column(nullable = false)
 	private Float weight;
 
-	@OneToOne()
+	@OneToOne(cascade = CascadeType.ALL)
 	private Supplier supplier;
 
-	@OneToMany()
+	@OneToMany(cascade = CascadeType.ALL)
 	private List<Price> prices;
 
-	public Product(String name, Float weight, Float currentPrice, Supplier supplier) {
+	public Product(String name, Float currentPrice, Float weight, Supplier supplier) {
 		this.name = name;
 		this.weight = weight;
 		this.supplier = supplier;
@@ -89,7 +90,7 @@ public class Product {
 		return price.getValue();
 	}
 
-	private void addPrice(Float value, Date currentDate) {
+	public void addPrice(Float value, Date currentDate) {
 		Price newPrice = new Price(value, currentDate);
 		prices.add(newPrice);
 	}

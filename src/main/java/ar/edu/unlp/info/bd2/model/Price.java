@@ -27,7 +27,7 @@ public class Price {
 	private Date startDate;
 
 	@Temporal(TemporalType.TIMESTAMP)
-	@Column(nullable = false)
+	@Column(nullable = true)
 	private Date endDate;
 
 	public Price(Float value, Date startDate) {
