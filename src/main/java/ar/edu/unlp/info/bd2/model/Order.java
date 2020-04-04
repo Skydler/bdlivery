@@ -58,6 +58,10 @@ public class Order {
 		this.statesRecord = new ArrayList<OrderStatus>();
 		this.statesRecord.add(new Pending(this));
 	}
+	
+	public Order() {
+		
+	}
 
 	public Long getId() {
 		return id;

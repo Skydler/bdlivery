@@ -17,16 +17,20 @@ public class Item {
 	private Long id;
 
 	@Column(nullable = false)
-	private Integer quantity;
+	private Long quantity;
 
 	@OneToOne()
 	private Product product;
 
-	public Item(Integer quantity, Product product) {
+	public Item(Long quantity, Product product) {
 		this.quantity = quantity;
 		this.product = product;
 	}
 
+	public Item() {
+		
+	}
+	
 	public Long getId() {
 		return id;
 	}
@@ -43,15 +47,15 @@ public class Item {
 		this.product = product;
 	}
 
-	public Item(Integer quantity) {
+	public Item(Long quantity) {
 		this.quantity = quantity;
 	}
 
-	public Integer getQuantity() {
+	public Long getQuantity() {
 		return quantity;
 	}
 
-	public void setQuantity(Integer quantity) {
+	public void setQuantity(Long quantity) {
 		this.quantity = quantity;
 	}
 

@@ -45,6 +45,10 @@ public class Product {
 		this.addPrice(currentPrice, currentDate);
 	}
 
+	public Product() {
+		
+	}
+	
 	public Long getId() {
 		return id;
 	}

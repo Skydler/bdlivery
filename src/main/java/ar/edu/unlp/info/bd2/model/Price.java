@@ -34,6 +34,10 @@ public class Price {
 		this.value = value;
 		this.startDate = startDate;
 	}
+	
+	public Price() {
+		
+	}
 
 	public Long getId() {
 		return id;
