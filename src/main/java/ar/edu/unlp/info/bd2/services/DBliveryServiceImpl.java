@@ -1,5 +1,6 @@
 package ar.edu.unlp.info.bd2.services;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -96,6 +97,7 @@ public class DBliveryServiceImpl implements DBliveryService {
 		Order actualOrder = (Order) repository.findById(Order.class, order);
 		List<Item> orderItems = actualOrder.getProducts();
 		orderItems.add(item);
+		repository.saveObject(actualOrder);
 		return actualOrder;
 	}
 
@@ -103,6 +105,7 @@ public class DBliveryServiceImpl implements DBliveryService {
 	public Order deliverOrder(Long order, User deliveryUser) throws DBliveryException {
 		Order actualOrder = (Order) repository.findById(Order.class, order);
 		actualOrder.deliverOrder(deliveryUser);
+		repository.saveObject(actualOrder);
 		return actualOrder;
 	}
 
@@ -110,6 +113,7 @@ public class DBliveryServiceImpl implements DBliveryService {
 	public Order cancelOrder(Long order) throws DBliveryException {
 		Order actualOrder = (Order) repository.findById(Order.class, order);
 		actualOrder.cancelOrder();
+		repository.saveObject(actualOrder);
 		return actualOrder;
 	}
 
@@ -117,6 +121,7 @@ public class DBliveryServiceImpl implements DBliveryService {
 	public Order finishOrder(Long order) throws DBliveryException {
 		Order actualOrder = (Order) repository.findById(Order.class, order);
 		actualOrder.finishOrder();
+		repository.saveObject(actualOrder);
 		return actualOrder;
 	}
 
@@ -146,8 +151,8 @@ public class DBliveryServiceImpl implements DBliveryService {
 
 	@Override
 	public List<Product> getProductByName(String name) {
-		// TODO Auto-generated method stub
-		return null;
+		ArrayList<Product> prods = (ArrayList<Product>) repository.findProductBySimilarName(name);
+		return prods;
 	}
 
 }
