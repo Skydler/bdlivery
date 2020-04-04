@@ -152,6 +152,7 @@ public class Order {
 		if (!this.canDeliver()) {
 			throw new DBliveryException("The order can't be delivered");
 		} else {
+			this.setDeliveryUser(delivery);
 			this.statesRecord.add(new OrderStatus(Order.SENDING));
 		}
 	}

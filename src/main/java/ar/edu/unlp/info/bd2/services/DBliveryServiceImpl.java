@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
+import ar.edu.unlp.info.bd2.model.Item;
 import ar.edu.unlp.info.bd2.model.Order;
 import ar.edu.unlp.info.bd2.model.OrderStatus;
 import ar.edu.unlp.info.bd2.model.Product;
@@ -84,56 +85,63 @@ public class DBliveryServiceImpl implements DBliveryService {
 
 	@Override
 	public Order createOrder(Date dateOfOrder, String address, Float coordX, Float coordY, User client) {
-		// TODO Auto-generated method stub
-		return null;
+		Order order = new Order(dateOfOrder, address, coordX, coordY, client);
+		repository.saveObject(order);
+		return order;
 	}
 
 	@Override
 	public Order addProduct(Long order, Long quantity, Product product) throws DBliveryException {
-		// TODO Auto-generated method stub
-		return null;
+		Item item = new Item(quantity, product);
+		Order actualOrder = (Order) repository.findById(Order.class, order);
+		List<Item> orderItems = actualOrder.getProducts();
+		orderItems.add(item);
+		return actualOrder;
 	}
 
 	@Override
 	public Order deliverOrder(Long order, User deliveryUser) throws DBliveryException {
-		// TODO Auto-generated method stub
-		return null;
+		Order actualOrder = (Order) repository.findById(Order.class, order);
+		actualOrder.deliverOrder(deliveryUser);
+		return actualOrder;
 	}
 
 	@Override
 	public Order cancelOrder(Long order) throws DBliveryException {
-		// TODO Auto-generated method stub
-		return null;
+		Order actualOrder = (Order) repository.findById(Order.class, order);
+		actualOrder.cancelOrder();
+		return actualOrder;
 	}
 
 	@Override
 	public Order finishOrder(Long order) throws DBliveryException {
-		// TODO Auto-generated method stub
-		return null;
+		Order actualOrder = (Order) repository.findById(Order.class, order);
+		actualOrder.finishOrder();
+		return actualOrder;
 	}
 
 	@Override
 	public boolean canCancel(Long order) throws DBliveryException {
-		// TODO Auto-generated method stub
-		return false;
+		Order actualOrder = (Order) repository.findById(Order.class, order);
+		return actualOrder.canCancel();
 	}
 
 	@Override
 	public boolean canFinish(Long id) throws DBliveryException {
-		// TODO Auto-generated method stub
-		return false;
+		Order actualOrder = (Order) repository.findById(Order.class, id);
+		return actualOrder.canFinish();
 	}
 
 	@Override
 	public boolean canDeliver(Long order) throws DBliveryException {
-		// TODO Auto-generated method stub
-		return false;
+		Order actualOrder = (Order) repository.findById(Order.class, order);
+		return actualOrder.canDeliver();
 	}
 
 	@Override
 	public OrderStatus getActualStatus(Long order) {
-		// TODO Auto-generated method stub
-		return null;
+		Order actualOrder = (Order) repository.findById(Order.class, order);
+		return actualOrder.getActualStatus();
 	}
 
 	@Override
