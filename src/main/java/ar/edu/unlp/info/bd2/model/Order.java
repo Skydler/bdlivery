@@ -64,6 +64,7 @@ public class Order {
 		this.coordX = coordX;
 		this.coordY = coordY;
 		this.client = client;
+		this.items = new ArrayList<Item>();
 		this.statesRecord = new ArrayList<OrderStatus>();
 		this.statesRecord.add(new OrderStatus(Order.PENDING));
 	}
