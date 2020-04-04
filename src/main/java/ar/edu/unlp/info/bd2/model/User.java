@@ -29,11 +29,14 @@ public class User {
 	@Column(nullable = false)
 	private Date birthDate;
 
-	@OneToMany(mappedBy = "client")
+	@OneToMany(mappedBy = "client", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	private List<Order> orders;
 
-	@OneToMany(mappedBy = "delivery")
+	@OneToMany(mappedBy = "delivery", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	private List<Order> deliveredOrders;
+
+	public User() {
+	}
 
 	public User(String email, String password, String username, String name, Date birthDate) {
 		this.email = email;

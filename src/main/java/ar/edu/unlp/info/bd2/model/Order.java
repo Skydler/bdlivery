@@ -7,6 +7,7 @@ import java.util.Date;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -15,6 +16,8 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+
+import ar.edu.unlp.info.bd2.repositories.DBliveryException;
 
 @Entity
 @Table(name = "Orders")
@@ -37,10 +40,10 @@ public class Order {
 	@Column(nullable = false)
 	private Float coordY;
 
-	@OneToMany(cascade = CascadeType.ALL)
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	private List<Item> items;
 
-	@OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	private List<OrderStatus> statesRecord;
 
 	@ManyToOne()
@@ -49,6 +52,12 @@ public class Order {
 	@ManyToOne()
 	private User delivery;
 
+//	Constants
+	private static final String CANCELLED = "Cancelled";
+	private static final String PENDING = "Pending";
+	private static final String SENDING = "Sending";
+	private static final String DELIVERED = "Delivered";
+
 	public Order(Date orderDate, String address, Float coordX, Float coordY, User client) {
 		this.orderDate = orderDate;
 		this.address = address;
@@ -56,11 +65,11 @@ public class Order {
 		this.coordY = coordY;
 		this.client = client;
 		this.statesRecord = new ArrayList<OrderStatus>();
-		this.statesRecord.add(new Pending(this));
+		this.statesRecord.add(new OrderStatus(Order.PENDING));
 	}
-	
+
 	public Order() {
-		
+
 	}
 
 	public Long getId() {
@@ -133,6 +142,46 @@ public class Order {
 
 	public void setDeliveryUser(User delivery) {
 		this.delivery = delivery;
+	}
+
+	public Boolean canDeliver() {
+		return !this.items.isEmpty();
+	}
+
+	public void deliverOrder(User delivery) throws DBliveryException {
+		if (!this.canDeliver()) {
+			throw new DBliveryException("The order can't be delivered");
+		} else {
+			this.statesRecord.add(new OrderStatus(Order.SENDING));
+		}
+	}
+
+	public Boolean canCancel() {
+		return this.items.isEmpty();
+	}
+
+	public void cancelOrder() throws DBliveryException {
+		if (!this.canCancel()) {
+			throw new DBliveryException("The order can't be cancelled");
+		} else {
+			this.statesRecord.add(new OrderStatus(Order.CANCELLED));
+		}
+	}
+
+	public Boolean canFinish() {
+		return this.getActualStatus().getStatus().equals(Order.SENDING);
+	}
+
+	public void finishOrder() throws DBliveryException {
+		if (!this.canFinish()) {
+			throw new DBliveryException("The order can't be finished");
+		} else {
+			this.statesRecord.add(new OrderStatus(Order.DELIVERED));
+		}
+	}
+
+	public OrderStatus getActualStatus() {
+		return this.statesRecord.get(this.statesRecord.size() - 1);
 	}
 
 }

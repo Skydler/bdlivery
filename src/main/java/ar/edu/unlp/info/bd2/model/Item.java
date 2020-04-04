@@ -1,7 +1,9 @@
 package ar.edu.unlp.info.bd2.model;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -19,7 +21,7 @@ public class Item {
 	@Column(nullable = false)
 	private Long quantity;
 
-	@OneToOne()
+	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
 	private Product product;
 
 	public Item(Long quantity, Product product) {
@@ -28,9 +30,9 @@ public class Item {
 	}
 
 	public Item() {
-		
+
 	}
-	
+
 	public Long getId() {
 		return id;
 	}

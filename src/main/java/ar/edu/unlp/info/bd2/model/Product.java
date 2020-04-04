@@ -8,6 +8,7 @@ import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -29,10 +30,10 @@ public class Product {
 	@Column(nullable = false)
 	private Float weight;
 
-	@OneToOne(cascade = CascadeType.ALL)
+	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
 	private Supplier supplier;
 
-	@OneToMany(cascade = CascadeType.ALL)
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	private List<Price> prices;
 
 	public Product(String name, Float currentPrice, Float weight, Supplier supplier) {
@@ -46,9 +47,9 @@ public class Product {
 	}
 
 	public Product() {
-		
+
 	}
-	
+
 	public Long getId() {
 		return id;
 	}
@@ -90,13 +91,16 @@ public class Product {
 	}
 
 	public Float getPrice() {
-		Price price = prices.get(prices.size() - 1);
-		return price.getValue();
+		return this.currentPrice().getValue();
 	}
 
-	public void addPrice(Float value, Date currentDate) {
-		Price newPrice = new Price(value, currentDate);
-		prices.add(newPrice);
+	private Price currentPrice() {
+		return this.prices.get(this.prices.size() - 1);
+	}
+
+	public void addPrice(Float value, Date startDate) {
+		Price newPrice = new Price(value, startDate);
+		this.prices.add(newPrice);
 	}
 
 }
