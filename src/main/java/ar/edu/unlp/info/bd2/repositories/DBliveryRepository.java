@@ -22,27 +22,33 @@ public class DBliveryRepository {
 	}
 
 	public <T> Object findById(Class<T> entityClass, Long id) {
-		Session session = sessionFactory.getCurrentSession();
+		Session session = null;
+		session = sessionFactory.getCurrentSession();
 		Object obj = session.find(entityClass, id);
 		return obj;
 	}
 
-	public Object saveObject(Object obj) {
-		Session session = sessionFactory.getCurrentSession();
-		session.saveOrUpdate(obj);
-		return obj;
+	public void saveObject(Object obj) {
+		Session session = null;
+		try {
+			session = sessionFactory.getCurrentSession();
+			session.saveOrUpdate(obj);
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+		}
 	}
 
-	public Object deleteObject(Object obj) {
-		Session session = sessionFactory.getCurrentSession();
+	public void deleteObject(Object obj) {
+		Session session = null;
+		session = sessionFactory.getCurrentSession();
 		session.delete(obj);
-		return obj;
 	}
 
 	public User findByEmail(String email) {
 		String hql = "SELECT u FROM User u WHERE u.email = :email";
 
-		Session session = sessionFactory.getCurrentSession();
+		Session session = null;
+		session = sessionFactory.getCurrentSession();
 
 		TypedQuery<User> query = session.createQuery(hql, User.class);
 		query.setParameter("email", email);
@@ -54,7 +60,8 @@ public class DBliveryRepository {
 	public User findByUsername(String username) {
 		String hql = "SELECT u FROM User u WHERE u.username = :username";
 
-		Session session = sessionFactory.getCurrentSession();
+		Session session = null;
+		session = sessionFactory.getCurrentSession();
 
 		TypedQuery<User> query = session.createQuery(hql, User.class);
 		query.setParameter("username", username);
@@ -66,7 +73,8 @@ public class DBliveryRepository {
 	public List<Product> findProductBySimilarName(String name) {
 		String hql = "FROM Product p WHERE p.name like :name";
 
-		Session session = sessionFactory.getCurrentSession();
+		Session session = null;
+		session = sessionFactory.getCurrentSession();
 
 		Query query = session.createQuery(hql);
 		query.setParameter("name", "%" + name + "%");
@@ -74,11 +82,10 @@ public class DBliveryRepository {
 		return prods;
 	}
 
+	// ------------------ Segundo Enunciado ------------------
 
-    // ------------------ Segundo Enunciado ------------------
+	// public List<Order> getAllOrdersMadeByUser(String username) {
+	// String hql = "SELECT u.orders FROM User u WHERE u.username = :username";
 
-    // public List<Order> getAllOrdersMadeByUser(String username) {
-		// String hql = "SELECT u.orders FROM User u WHERE u.username = :username";
-
-    // }
+	// }
 }

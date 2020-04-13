@@ -30,9 +30,10 @@ public class DBliveryServiceImpl implements DBliveryService {
 
 	@Override
 	public Order addProduct(Long order, Long quantity, Product product) throws DBliveryException {
-		Item item = new Item(quantity, product);
 		Order actualOrder = this.getOrderById(order)
 				.orElseThrow(() -> new DBliveryException(DBliveryServiceImpl.ORDER_NOT_FOUND));
+		Item item = new Item(quantity, product);
+		repository.saveObject(item);
 		List<Item> orderItems = actualOrder.getProducts();
 		orderItems.add(item);
 		repository.saveObject(actualOrder);
@@ -43,7 +44,7 @@ public class DBliveryServiceImpl implements DBliveryService {
 	public boolean canCancel(Long order) throws DBliveryException {
 		Order actualOrder = this.getOrderById(order)
 				.orElseThrow(() -> new DBliveryException(DBliveryServiceImpl.ORDER_NOT_FOUND));
-		return actualOrder.isItemsEmpty() && actualOrder.getActualStatus().getStatus().equals(Order.PENDING);
+		return actualOrder.getActualStatus().getStatus().equals(Order.PENDING);
 	}
 
 	@Override
