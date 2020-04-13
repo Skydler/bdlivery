@@ -17,8 +17,6 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
-import ar.edu.unlp.info.bd2.repositories.DBliveryException;
-
 @Entity
 @Table(name = "Orders")
 public class Order {
@@ -53,10 +51,10 @@ public class Order {
 	private User delivery;
 
 //	Constants
-	private static final String CANCELLED = "Cancelled";
-	private static final String PENDING = "Pending";
-	private static final String SENDING = "Sending";
-	private static final String DELIVERED = "Delivered";
+	public static final String CANCELLED = "Cancelled";
+	public static final String PENDING = "Pending";
+	public static final String SENDING = "Sending";
+	public static final String DELIVERED = "Delivered";
 
 	public Order(Date orderDate, String address, Float coordX, Float coordY, User client) {
 		this.orderDate = orderDate;
@@ -145,41 +143,8 @@ public class Order {
 		this.delivery = delivery;
 	}
 
-	public Boolean canDeliver() {
-		return !this.items.isEmpty();
-	}
-
-	public void deliverOrder(User delivery) throws DBliveryException {
-		if (!this.canDeliver()) {
-			throw new DBliveryException("The order can't be delivered");
-		} else {
-			this.setDeliveryUser(delivery);
-			this.statesRecord.add(new OrderStatus(Order.SENDING));
-		}
-	}
-
-	public Boolean canCancel() {
+	public Boolean isItemsEmpty() {
 		return this.items.isEmpty();
-	}
-
-	public void cancelOrder() throws DBliveryException {
-		if (!this.canCancel()) {
-			throw new DBliveryException("The order can't be cancelled");
-		} else {
-			this.statesRecord.add(new OrderStatus(Order.CANCELLED));
-		}
-	}
-
-	public Boolean canFinish() {
-		return this.getActualStatus().getStatus().equals(Order.SENDING);
-	}
-
-	public void finishOrder() throws DBliveryException {
-		if (!this.canFinish()) {
-			throw new DBliveryException("The order can't be finished");
-		} else {
-			this.statesRecord.add(new OrderStatus(Order.DELIVERED));
-		}
 	}
 
 	public OrderStatus getActualStatus() {
