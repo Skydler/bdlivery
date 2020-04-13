@@ -2,6 +2,7 @@ package ar.edu.unlp.info.bd2.model;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -103,6 +104,7 @@ public class Product {
 	}
 
 	private Price currentPrice() {
+		Collections.sort(this.prices);
 		return this.prices.get(this.prices.size() - 1);
 	}
 

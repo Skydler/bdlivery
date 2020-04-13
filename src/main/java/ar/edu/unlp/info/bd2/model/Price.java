@@ -13,7 +13,7 @@ import javax.persistence.TemporalType;
 
 @Entity
 @Table(name = "Prices")
-public class Price {
+public class Price implements Comparable<Price>{
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -69,5 +69,10 @@ public class Price {
 
 	public void setEndDate(Date endDate) {
 		this.endDate = endDate;
+	}
+	
+	@Override
+	public int compareTo(Price price) {
+		return this.value.compareTo(price.getValue());
 	}
 }

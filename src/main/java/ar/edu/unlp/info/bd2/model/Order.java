@@ -1,6 +1,7 @@
 package ar.edu.unlp.info.bd2.model;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Date;
 
@@ -120,6 +121,7 @@ public class Order {
 	}
 
 	public List<OrderStatus> getStatus() {
+		Collections.sort(this.statesRecord);
 		return statesRecord;
 	}
 
@@ -148,7 +150,7 @@ public class Order {
 	}
 
 	public OrderStatus getActualStatus() {
-		// TODO en este hay que ordenar los estados por fecha y entregar el más reciente
+		Collections.sort(this.statesRecord);
 		return this.statesRecord.get(this.statesRecord.size() - 1);
 	}
 

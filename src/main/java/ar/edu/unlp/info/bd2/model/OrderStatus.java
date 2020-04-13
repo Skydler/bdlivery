@@ -14,7 +14,7 @@ import javax.persistence.TemporalType;
 
 @Entity
 @Table(name = "OrderStatus")
-public class OrderStatus {
+public class OrderStatus implements Comparable<OrderStatus> {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.TABLE)
@@ -63,6 +63,16 @@ public class OrderStatus {
 
 	public void setStatusDate(Date statusDate) {
 		this.statusDate = statusDate;
+	}
+	
+	@Override
+	public int compareTo(OrderStatus ord) {
+		return this.getStatusDate().compareTo(ord.getStatusDate());
+	}
+	
+	@Override
+	public String toString() {
+		return "OrderStatus: " + this.getStatus();
 	}
 
 }
