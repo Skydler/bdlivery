@@ -148,8 +148,17 @@ public class Order {
 	}
 
 	public OrderStatus getActualStatus() {
-		// en este hay que ordenar los estados por fecha y entregar el más reciente
+		// TODO en este hay que ordenar los estados por fecha y entregar el más reciente
 		return this.statesRecord.get(this.statesRecord.size() - 1);
+	}
+
+	// TODO revisar que esta esté bien y si se peude mejorar/refactorizar
+	public Float getAmount() {
+		Float total = (float) 0;
+		for (int i = 0; i < this.items.size(); i++) {
+			total = total + this.items.get(i).getQuantity();
+		}
+		return total;
 	}
 
 }
