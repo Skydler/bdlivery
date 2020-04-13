@@ -5,6 +5,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.transaction.annotation.Transactional;
+
 import ar.edu.unlp.info.bd2.model.Item;
 import ar.edu.unlp.info.bd2.model.Order;
 import ar.edu.unlp.info.bd2.model.OrderStatus;
@@ -14,6 +16,7 @@ import ar.edu.unlp.info.bd2.model.User;
 import ar.edu.unlp.info.bd2.repositories.DBliveryException;
 import ar.edu.unlp.info.bd2.repositories.DBliveryRepository;
 
+@Transactional
 public class DBliveryServiceImpl implements DBliveryService {
 
 	private DBliveryRepository repository;
@@ -188,7 +191,8 @@ public class DBliveryServiceImpl implements DBliveryService {
 
 	@Override
 	public List<Order> getAllOrdersMadeByUser(String username) {
-		return repository.getAllOrdersMadeByUser(username);
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 	@Override
