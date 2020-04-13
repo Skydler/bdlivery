@@ -46,6 +46,14 @@ public class Product {
 		this.prices.add(new Price(currentPrice, currentDate));
 	}
 
+	public Product(String name, Float currentPrice, Float weight, Supplier supplier, Date date) {
+		this.name = name;
+		this.weight = weight;
+		this.supplier = supplier;
+		this.prices = new ArrayList<Price>();
+		this.prices.add(new Price(currentPrice, date));
+	}
+
 	public Product() {
 
 	}
