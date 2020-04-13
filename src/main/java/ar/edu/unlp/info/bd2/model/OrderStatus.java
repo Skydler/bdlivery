@@ -17,7 +17,7 @@ import javax.persistence.TemporalType;
 public class OrderStatus implements Comparable<OrderStatus> {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.TABLE)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
 	@Column(nullable = false)

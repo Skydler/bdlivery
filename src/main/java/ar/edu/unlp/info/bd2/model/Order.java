@@ -12,6 +12,7 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
@@ -40,15 +41,19 @@ public class Order {
 	private Float coordY;
 
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@JoinColumn(name = "id_item")
 	private List<Item> items;
 
-	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+	@JoinColumn(name = "id_orderStatus")
 	private List<OrderStatus> statesRecord;
 
 	@ManyToOne()
+	@JoinColumn(name = "id_client")
 	private User client;
 
 	@ManyToOne()
+	@JoinColumn(name = "id_delivery")
 	private User delivery;
 
 //	Constants
@@ -65,7 +70,7 @@ public class Order {
 		this.client = client;
 		this.items = new ArrayList<Item>();
 		this.statesRecord = new ArrayList<OrderStatus>();
-		this.statesRecord.add(new OrderStatus(Order.PENDING));
+		this.statesRecord.add(new OrderStatus(Order.PENDING, orderDate));
 	}
 
 	public Order() {

@@ -13,6 +13,7 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
@@ -31,10 +32,12 @@ public class Product {
 	@Column(nullable = false)
 	private Float weight;
 
-	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+	@OneToOne()
+	@JoinColumn(name = "id_supplier", nullable = false)
 	private Supplier supplier;
 
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@JoinColumn(name = "id_price", nullable = false)
 	private List<Price> prices;
 
 	public Product(String name, Float currentPrice, Float weight, Supplier supplier) {
