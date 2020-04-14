@@ -30,12 +30,13 @@ public class DBliveryServiceImpl implements DBliveryService {
 
 	@Override
 	public Order addProduct(Long order, Long quantity, Product product) throws DBliveryException {
+		Product prod = this.getProductById(product.getId())
+				.orElseThrow(() -> new DBliveryException(DBliveryServiceImpl.PRODUCT_NOT_FOUND));
 		Order actualOrder = this.getOrderById(order)
 				.orElseThrow(() -> new DBliveryException(DBliveryServiceImpl.ORDER_NOT_FOUND));
-		Item item = new Item(quantity, product);
+		Item item = new Item(quantity, prod);
 		repository.saveObject(item);
-		List<Item> orderItems = actualOrder.getProducts();
-		orderItems.add(item);
+		actualOrder.addProduct(item);
 		repository.saveObject(actualOrder);
 		return actualOrder;
 	}
@@ -180,8 +181,7 @@ public class DBliveryServiceImpl implements DBliveryService {
 
 	@Override
 	public List<User> get5LessDeliveryUsers() {
-		// TODO Auto-generated method stub
-		return null;
+		return repository.get5LessDeliveryUsers();
 	}
 
 	@Override
@@ -192,14 +192,12 @@ public class DBliveryServiceImpl implements DBliveryService {
 
 	@Override
 	public List<Order> getAllOrdersMadeByUser(String username) {
-		// TODO Auto-generated method stub
-		return null;
+		return repository.getAllOrdersMadeByUser(username);
 	}
 
 	@Override
 	public Product getBestSellingProduct() {
-		// TODO Auto-generated method stub
-		return null;
+		return repository.getBestSellingProduct();
 	}
 
 	@Override
@@ -234,14 +232,12 @@ public class DBliveryServiceImpl implements DBliveryService {
 
 	@Override
 	public List<Order> getOrdersCompleteMorethanOneDay() {
-		// TODO Auto-generated method stub
-		return null;
+		return repository.getOrdersCompleteMorethanOneDay();
 	}
 
 	@Override
 	public List<Order> getOrderWithMoreQuantityOfProducts(Date day) {
-		// TODO Auto-generated method stub
-		return null;
+		return repository.getOrderWithMoreQuantityOfProducts(day);
 	}
 
 	@Override
@@ -264,26 +260,22 @@ public class DBliveryServiceImpl implements DBliveryService {
 
 	@Override
 	public List<Product> getProductIncreaseMoreThan100() {
-		// TODO Auto-generated method stub
-		return null;
+		return repository.getProductIncreaseMoreThan100();
 	}
 
 	@Override
 	public List<Product> getProductsNotSold() {
-		// TODO Auto-generated method stub
-		return null;
+		return repository.getProductsNotSold();
 	}
 
 	@Override
 	public List<Product> getProductsOnePrice() {
-		// TODO Auto-generated method stub
-		return null;
+		return repository.getProductsOnePrice();
 	}
 
 	@Override
 	public List<Object[]> getProductsWithPriceAt(Date day) {
-		// TODO Auto-generated method stub
-		return null;
+		return repository.getProductsWithPriceAt(day);
 	}
 
 	@Override
@@ -300,20 +292,17 @@ public class DBliveryServiceImpl implements DBliveryService {
 
 	@Override
 	public List<Product> getSoldProductsOn(Date day) {
-		// TODO Auto-generated method stub
-		return null;
+		return repository.getSoldProductsOn(day);
 	}
 
 	@Override
 	public Supplier getSupplierLessExpensiveProduct() {
-		// TODO Auto-generated method stub
-		return null;
+		return repository.getSupplierLessExpensiveProduct();
 	}
 
 	@Override
 	public List<Supplier> getSuppliersDoNotSellOn(Date day) {
-		// TODO Auto-generated method stub
-		return null;
+		return repository.getSuppliersDoNotSellOn(day);
 	}
 
 	@Override
