@@ -45,10 +45,8 @@ public class DBliveryServiceImpl implements DBliveryService {
 
 	@Override
 	public Product updateProductPrice(Long id, Float price, Date startDate) throws DBliveryException {
-		Product prod = (Product) repository.findById(Product.class, id);
-		if (prod == null) {
-			throw new DBliveryException("No existe el producto para el id dado");
-		}
+		Product prod = this.getProductById(id)
+				.orElseThrow(() -> new DBliveryException("No existe el producto para el id dado"));
 		prod.addPrice(price, startDate);
 		repository.saveObject(prod);
 		return prod;
@@ -94,7 +92,8 @@ public class DBliveryServiceImpl implements DBliveryService {
 	@Override
 	public Order addProduct(Long order, Long quantity, Product product) throws DBliveryException {
 		Item item = new Item(quantity, product);
-		Order actualOrder = (Order) repository.findById(Order.class, order);
+		Order actualOrder = this.getOrderById(order)
+				.orElseThrow(() -> new DBliveryException("No existe la orden para el id dado"));
 		List<Item> orderItems = actualOrder.getProducts();
 		orderItems.add(item);
 		repository.saveObject(actualOrder);
@@ -103,49 +102,68 @@ public class DBliveryServiceImpl implements DBliveryService {
 
 	@Override
 	public Order deliverOrder(Long order, User deliveryUser) throws DBliveryException {
-		Order actualOrder = (Order) repository.findById(Order.class, order);
-		actualOrder.deliverOrder(deliveryUser);
+		Order actualOrder = this.getOrderById(order)
+				.orElseThrow(() -> new DBliveryException("No existe la orden para el id dado"));
+		if (!this.canDeliver(order)) {
+			throw new DBliveryException("The order can't be delivered");
+		} else {
+			actualOrder.setDeliveryUser(deliveryUser);
+			actualOrder.getStatus().add(new OrderStatus(Order.SENDING));
+		}
 		repository.saveObject(actualOrder);
 		return actualOrder;
 	}
 
 	@Override
 	public Order cancelOrder(Long order) throws DBliveryException {
-		Order actualOrder = (Order) repository.findById(Order.class, order);
-		actualOrder.cancelOrder();
+		Order actualOrder = this.getOrderById(order)
+				.orElseThrow(() -> new DBliveryException("No existe la orden para el id dado"));
+		if (!this.canCancel(order)) {
+			throw new DBliveryException("The order can't be cancelled");
+		} else {
+			actualOrder.getStatus().add(new OrderStatus(Order.CANCELLED));
+		}
 		repository.saveObject(actualOrder);
 		return actualOrder;
 	}
 
 	@Override
 	public Order finishOrder(Long order) throws DBliveryException {
-		Order actualOrder = (Order) repository.findById(Order.class, order);
-		actualOrder.finishOrder();
+		Order actualOrder = this.getOrderById(order)
+				.orElseThrow(() -> new DBliveryException("No existe la orden para el id dado"));
+		if (!this.canFinish(order)) {
+			throw new DBliveryException("The order can't be finished");
+		} else {
+			actualOrder.getStatus().add(new OrderStatus(Order.DELIVERED));
+		}
 		repository.saveObject(actualOrder);
 		return actualOrder;
 	}
 
 	@Override
 	public boolean canCancel(Long order) throws DBliveryException {
-		Order actualOrder = (Order) repository.findById(Order.class, order);
-		return actualOrder.canCancel();
+		Order actualOrder = this.getOrderById(order)
+				.orElseThrow(() -> new DBliveryException("No existe la orden para el id dado"));
+		return actualOrder.isItemsEmpty() && actualOrder.getActualStatus().getStatus().equals(Order.PENDING);
 	}
 
 	@Override
 	public boolean canFinish(Long id) throws DBliveryException {
-		Order actualOrder = (Order) repository.findById(Order.class, id);
-		return actualOrder.canFinish();
+		Order actualOrder = this.getOrderById(id)
+				.orElseThrow(() -> new DBliveryException("No existe la orden para el id dado"));
+		return !actualOrder.isItemsEmpty() && actualOrder.getActualStatus().getStatus().equals(Order.SENDING);
 	}
 
 	@Override
 	public boolean canDeliver(Long order) throws DBliveryException {
-		Order actualOrder = (Order) repository.findById(Order.class, order);
-		return actualOrder.canDeliver();
+		Order actualOrder = this.getOrderById(order)
+				.orElseThrow(() -> new DBliveryException("No existe la orden para el id dado"));
+		return !actualOrder.isItemsEmpty() && actualOrder.getActualStatus().getStatus().equals(Order.PENDING);
 	}
 
 	@Override
 	public OrderStatus getActualStatus(Long order) {
-		Order actualOrder = (Order) repository.findById(Order.class, order);
+		Order actualOrder = this.getOrderById(order).get();
 		return actualOrder.getActualStatus();
 	}
 
