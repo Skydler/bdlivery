@@ -27,12 +27,13 @@ public class Price implements Comparable<Price>{
 	private Date startDate;
 
 	@Temporal(TemporalType.TIMESTAMP)
-	@Column(nullable = true)
+	@Column(nullable = false)
 	private Date endDate;
 
 	public Price(Float value, Date startDate) {
 		this.value = value;
 		this.startDate = startDate;
+		this.endDate = new Date(9999999999999L);
 	}
 	
 	public Price() {
@@ -69,6 +70,10 @@ public class Price implements Comparable<Price>{
 
 	public void setEndDate(Date endDate) {
 		this.endDate = endDate;
+	}
+	
+	public boolean isInsidePriceRange(Date date) {
+		return this.startDate.before(date) && this.endDate.after(date);
 	}
 	
 	@Override

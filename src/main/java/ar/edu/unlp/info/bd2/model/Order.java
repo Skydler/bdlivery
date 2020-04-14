@@ -39,6 +39,9 @@ public class Order {
 
 	@Column(nullable = false)
 	private Float coordY;
+	
+	@Column(nullable = false)
+	private Float amount;
 
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	@JoinColumn(name = "id_item")
@@ -68,6 +71,7 @@ public class Order {
 		this.coordX = coordX;
 		this.coordY = coordY;
 		this.client = client;
+		this.amount = 0F;
 		this.items = new ArrayList<Item>();
 		this.statesRecord = new ArrayList<OrderStatus>();
 		this.statesRecord.add(new OrderStatus(Order.PENDING, orderDate));
@@ -159,13 +163,17 @@ public class Order {
 		return this.statesRecord.get(this.statesRecord.size() - 1);
 	}
 
-	// TODO revisar que esta esté bien y si se peude mejorar/refactorizar
 	public Float getAmount() {
-		Float total = (float) 0;
-		for (int i = 0; i < this.items.size(); i++) {
-			total = total + this.items.get(i).getQuantity();
-		}
-		return total;
+		return amount;
+	}
+	
+	public void setAmount(Float amount) {
+		this.amount = amount;
 	}
 
+	public void addProduct(Item item) {
+		this.items.add(item);
+		this.amount += item.getProduct().getPriceAt(this.orderDate) * item.getQuantity();
+	}
+	
 }

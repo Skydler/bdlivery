@@ -18,6 +18,8 @@ import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
+import org.joda.time.LocalDate;
+
 @Entity
 @Table(name = "Products")
 public class Product {
@@ -36,8 +38,8 @@ public class Product {
 	@JoinColumn(name = "id_supplier", nullable = false)
 	private Supplier supplier;
 
-	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-	@JoinColumn(name = "id_price", nullable = false)
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+	@JoinColumn(name = "id_product", nullable = false)
 	private List<Price> prices;
 
 	public Product(String name, Float currentPrice, Float weight, Supplier supplier) {
@@ -46,7 +48,7 @@ public class Product {
 		this.supplier = supplier;
 		this.prices = new ArrayList<Price>();
 
-		Date currentDate = Calendar.getInstance().getTime();
+		Date currentDate = new Date(0);
 		this.prices.add(new Price(currentPrice, currentDate));
 	}
 
@@ -106,13 +108,21 @@ public class Product {
 		return this.currentPrice().getValue();
 	}
 
-	private Price currentPrice() {
+	public Price currentPrice() {
 		Collections.sort(this.prices);
 		return this.prices.get(this.prices.size() - 1);
 	}
+	
+	public Float getPriceAt(Date date) {
+		Price price = this.prices.stream().filter(p -> p.isInsidePriceRange(date)).findFirst().get();
+		return price.getValue();
+	}
 
 	public void addPrice(Float value, Date startDate) {
-		this.currentPrice().setEndDate(startDate);
+		Price currentPrice = this.currentPrice();
+		Date cloned_date = (Date) startDate.clone();
+		cloned_date = LocalDate.fromDateFields(cloned_date).minusDays(1).toDate();
+		currentPrice.setEndDate(cloned_date);
 		Price newPrice = new Price(value, startDate);
 		this.prices.add(newPrice);
 	}
