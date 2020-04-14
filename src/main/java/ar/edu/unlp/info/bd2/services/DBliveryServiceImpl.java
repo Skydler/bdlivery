@@ -208,20 +208,17 @@ public class DBliveryServiceImpl implements DBliveryService {
 
 	@Override
 	public List<Order> getCancelledOrdersInPeriod(Date startDate, Date endDate) {
-		// TODO Auto-generated method stub
-		return null;
+		return repository.getCancelledOrdersInPeriod(startDate, endDate);
 	}
 
 	@Override
 	public List<Order> getDeliveredOrdersForUser(String username) {
-		// TODO Auto-generated method stub
-		return null;
+		return repository.getDeliveredOrdersForUser(username);
 	}
 
 	@Override
 	public List<Order> getDeliveredOrdersInPeriod(Date startDate, Date endDate) {
-		// TODO Auto-generated method stub
-		return null;
+		return repository.getDeliveredOrdersInPeriod(startDate, endDate);
 	}
 
 	@Override

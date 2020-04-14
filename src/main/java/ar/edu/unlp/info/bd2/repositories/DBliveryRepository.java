@@ -154,11 +154,12 @@ public class DBliveryRepository {
 	
 	@SuppressWarnings("unchecked")
 	public List <Order>  getCancelledOrdersInPeriod(Date startDate, Date endDate){
-		String hql = "SELECT DISTINCT(o) FROM Order o JOIN o.statesRecord os WHERE os.status = 'Cancelled' and os.statusDate IN (SELECT os.statusDate FROM Order o JOIN o.statesRecord os WHERE os.statusDate BETWEEN :startDate and :endDate GROUP BY o.id)";
-		Session session = null;
-		session = sessionFactory.getCurrentSession();
+		String hql = "SELECT o FROM Order o JOIN o.statesRecord os WHERE os.status = 'Cancelled' AND os.statusDate BETWEEN :startDate AND :endDate";
 		
+		Session session = sessionFactory.getCurrentSession();
 		Query<?> query = session.createQuery(hql);
+		query.setParameter("startDate", startDate);
+		query.setParameter("endDate", endDate);
 		List<Order> orders = (List<Order>) query.list();
 		return orders;
 	}
@@ -176,11 +177,12 @@ public class DBliveryRepository {
 	
 	@SuppressWarnings("unchecked")
 	public List <Order>  getDeliveredOrdersInPeriod(Date startDate, Date endDate){
-		String hql = "SELECT DISTINCT(o) FROM Order o JOIN o.statesRecord os WHERE os.status = 'Delivered' and os.statusDate IN (SELECT os.statusDate FROM Order o JOIN o.statesRecord os WHERE os.statusDate BETWEEN :startDate and :endDate GROUP BY o.id)";
-		Session session = null;
-		session = sessionFactory.getCurrentSession();
+		String hql = "SELECT o FROM Order o JOIN o.statesRecord os WHERE os.status = 'Delivered' AND os.statusDate BETWEEN :startDate AND :endDate";
 		
+		Session session = sessionFactory.getCurrentSession();
 		Query<?> query = session.createQuery(hql);
+		query.setParameter("startDate", startDate);
+		query.setParameter("endDate", endDate);
 		List<Order> orders = (List<Order>) query.list();
 		return orders;
 	}
@@ -214,11 +216,13 @@ public class DBliveryRepository {
 	
 	@SuppressWarnings("unchecked")
 	public List<Order> getOrderWithMoreQuantityOfProducts(Date day) {
-		String hql = "SELECT o FROM Order o JOIN o.items i WHERE o.orderDate = :day GROUP BY o.id ORDER BY COUNT(i) DESC";
+		String hql = "SELECT o FROM Order o JOIN o.items i WHERE o.orderDate = :day GROUP BY o ORDER BY COUNT(i) DESC";
 
 		Session session = sessionFactory.getCurrentSession();
 		Query<?> query = session.createQuery(hql);
 		query.setParameter("day", day);
+		query.setFirstResult(0);
+		query.setMaxResults(1);
 		List<Order> orders = (List<Order>) query.list();
 		return orders;
 	}
@@ -332,6 +336,16 @@ public class DBliveryRepository {
 		String hql = "SELECT o FROM Order o WHERE o.currentStatus='Pending'";
 		Session session = sessionFactory.getCurrentSession();
 		Query<?> query = session.createQuery(hql);
+		List<Order> orders = (List<Order>) query.list();
+		return orders;
+	}
+
+	@SuppressWarnings("unchecked")
+	public List<Order> getDeliveredOrdersForUser(String username) {
+		String hql = "SELECT o FROM Order o JOIN o.client c WHERE c.username = :username AND o.currentStatus='Delivered'";
+		Session session = sessionFactory.getCurrentSession();
+		Query<?> query = session.createQuery(hql);
+		query.setParameter("username",  username);
 		List<Order> orders = (List<Order>) query.list();
 		return orders;
 	}
