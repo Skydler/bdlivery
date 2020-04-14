@@ -244,12 +244,11 @@ public class DBliveryRepository {
 
 	@SuppressWarnings("unchecked")
 	public List<Order> getOrdersCompleteMorethanOneDay() {
-//		String hql = "SELECT o FROM User u JOIN u.orders o WHERE u.username = :username";
-//		Session session = sessionFactory.getCurrentSession();
-//		Query<?> query = session.createQuery(hql);
-//		List<Order> orders = (List<Order>) query.list();
-//		return orders;
-		return null;
+		String hql = "SELECT o.* FROM Orders o INNER JOIN OrderStatus s1 ON o.id=s1.id_orderStatus INNER JOIN OrderStatus s2 ON s1.id_orderStatus=s2.id_orderStatus WHERE s1.status='Pending' AND s2.status='Delivered' AND DATEDIFF(s2.statusDate,s1.statusDate) >= 1";
+		Session session = sessionFactory.getCurrentSession();
+		Query<?> query = session.createSQLQuery(hql);
+		List<Order> orders = (List<Order>) query.list();
+		return orders;
 	}
 
 	@SuppressWarnings("unchecked")
@@ -285,13 +284,12 @@ public class DBliveryRepository {
 
 	@SuppressWarnings("unchecked")
 	public List<Product> getProductIncreaseMoreThan100() {
-//		String hql = "SELECT p FROM Order o JOIN o.items i JOIN i.product p WHERE o.orderDate = :day";
-//
-//		Session session = sessionFactory.getCurrentSession();
-//		Query<?> query = session.createQuery(hql);
-//		List<Product> products = (List<Product>) query.list();
-//		return products;
-		return null;
+		String hql = "SELECT DISTINCT(p) FROM Product p JOIN p.prices pri WHERE (SELECT MAX(pric.value) FROM Product pr JOIN pr.prices pric WHERE p=pr) >= pri.value * 2";
+
+		Session session = sessionFactory.getCurrentSession();
+		Query<?> query = session.createQuery(hql);
+		List<Product> products = (List<Product>) query.list();
+		return products;
 	}
 
 	@SuppressWarnings("unchecked")
@@ -317,14 +315,22 @@ public class DBliveryRepository {
 
 	@SuppressWarnings("unchecked")
 	public List<User> get5LessDeliveryUsers() {
-//		String hql = "SELECT u FROM User u JOIN u.deliveredOrders o GROUP BY u ORDER BY COUNT(o)";
-//
-//		Session session = sessionFactory.getCurrentSession();
-//		Query<?> query = session.createQuery(hql);
-//		query.setFirstResult(0);
-//		query.setMaxResults(5);
-//		List<User> users = (List<User>) query.list();
-//		return users;
-		return null;
+		String hql = "SELECT u FROM User u JOIN u.deliveredOrders o GROUP BY u ORDER BY COUNT(o)";
+
+		Session session = sessionFactory.getCurrentSession();
+		Query<?> query = session.createQuery(hql);
+		query.setFirstResult(0);
+		query.setMaxResults(5);
+		List<User> users = (List<User>) query.list();
+		return users;
+	}
+
+	@SuppressWarnings("unchecked")
+	public List<Order> getPendingOrders() {
+		String hql = "SELECT o FROM Order o WHERE o.currentStatus='Pending'";
+		Session session = sessionFactory.getCurrentSession();
+		Query<?> query = session.createQuery(hql);
+		List<Order> orders = (List<Order>) query.list();
+		return orders;
 	}
 }

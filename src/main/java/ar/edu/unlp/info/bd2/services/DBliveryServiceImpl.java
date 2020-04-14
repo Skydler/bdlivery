@@ -57,6 +57,7 @@ public class DBliveryServiceImpl implements DBliveryService {
 			throw new DBliveryException("The order can't be cancelled");
 		} else {
 			actualOrder.getStatus().add(new OrderStatus(Order.CANCELLED));
+			actualOrder.setCurrentStatus(Order.CANCELLED);
 		}
 		repository.saveObject(actualOrder);
 		return actualOrder;
@@ -71,6 +72,7 @@ public class DBliveryServiceImpl implements DBliveryService {
 			throw new DBliveryException("The order can't be cancelled");
 		} else {
 			actualOrder.getStatus().add(new OrderStatus(Order.CANCELLED, date));
+			actualOrder.setCurrentStatus(Order.CANCELLED);
 		}
 		repository.saveObject(actualOrder);
 		return actualOrder;
@@ -134,6 +136,7 @@ public class DBliveryServiceImpl implements DBliveryService {
 		} else {
 			actualOrder.setDeliveryUser(deliveryUser);
 			actualOrder.getStatus().add(new OrderStatus(Order.SENDING));
+			actualOrder.setCurrentStatus(Order.SENDING);
 		}
 		repository.saveObject(actualOrder);
 		return actualOrder;
@@ -148,6 +151,7 @@ public class DBliveryServiceImpl implements DBliveryService {
 		} else {
 			actualOrder.setDeliveryUser(deliveryUser);
 			actualOrder.getStatus().add(new OrderStatus(Order.SENDING, date));
+			actualOrder.setCurrentStatus(Order.SENDING);
 		}
 		repository.saveObject(actualOrder);
 		return actualOrder;
@@ -161,6 +165,7 @@ public class DBliveryServiceImpl implements DBliveryService {
 			throw new DBliveryException("The order can't be finished");
 		} else {
 			actualOrder.getStatus().add(new OrderStatus(Order.DELIVERED));
+			actualOrder.setCurrentStatus(Order.DELIVERED);
 		}
 		repository.saveObject(actualOrder);
 		return actualOrder;
@@ -174,6 +179,7 @@ public class DBliveryServiceImpl implements DBliveryService {
 			throw new DBliveryException("The order can't be finished");
 		} else {
 			actualOrder.getStatus().add(new OrderStatus(Order.DELIVERED, date));
+			actualOrder.setCurrentStatus(Order.DELIVERED);
 		}
 		repository.saveObject(actualOrder);
 		return actualOrder;
