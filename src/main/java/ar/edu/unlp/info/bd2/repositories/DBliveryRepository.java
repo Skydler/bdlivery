@@ -105,14 +105,12 @@ public class DBliveryRepository {
 			Session session = null;
 			session = sessionFactory.getCurrentSession();
 			
-			Query query = session.createQuery(hql);
+			Query<?> query = session.createQuery(hql);
 			query.setParameter("amount", amount);
-			List<User> users = query.list();
+			List<User> users = (List<User>) query.list();
 			return users;
 		}
-	
-	
-	
+
 	@SuppressWarnings("unchecked")
 	public List<Supplier> getTopNSuppliersInSentOrders(int n){
 		String hql = "SELECT s FROM Order o JOIN o.items i JOIN i.product p JOIN p.supplier s WHERE o.actualState = 'Sending' and o.statusDate IN (SELECT (MAX(os.statusDate)) FROM Order o JOIN o.statesRecord os GROUP BY o.id) ORDER BY COUNT(p.supplier)";
@@ -120,9 +118,10 @@ public class DBliveryRepository {
 		Session session = null;
 		session = sessionFactory.getCurrentSession();
 		
-		Query query = session.createQuery(hql);
+		Query<?> query = session.createQuery(hql);
+		query.setFirstResult(0);
 		query.setMaxResults(n);
-		List<Supplier> suppliers = query.list();
+		List<Supplier> suppliers = (List<Supplier>) query.list();
 		return suppliers;
 	}
 	
@@ -133,7 +132,8 @@ public class DBliveryRepository {
 		Session session = null;
 		session = sessionFactory.getCurrentSession();
 		
-		Query query = session.createQuery(hql);
+		Query<?> query = session.createQuery(hql);
+		query.setFirstResult(0);
 		query.setMaxResults(9);
 		List<Product> products = (List<Product>) query.list();
 		return products;
@@ -141,11 +141,12 @@ public class DBliveryRepository {
 	
 	@SuppressWarnings("unchecked")
 	public List<User> getTop6UsersMoreOrders(){
-		String hql = "SELECT u FROM User u JOIN u.orders o GROUP BY u.id ORDER BY COUNT(o)";
+		String hql = "SELECT u FROM User u JOIN u.orders o GROUP BY u.id ORDER BY COUNT(o) DESC";
 		Session session = null;
 		session = sessionFactory.getCurrentSession();
 		
 		Query<?> query = session.createQuery(hql);
+		query.setFirstResult(0);
 		query.setMaxResults(6);
 		List<User> users = (List<User>) query.list();
 		return users;
@@ -163,19 +164,8 @@ public class DBliveryRepository {
 	}
 	
 	@SuppressWarnings("unchecked")
-	public List <Order>  getPendingOrders(){
-		String hql = "SELECT DISTINCT(o) FROM Order o JOIN o.statesRecord os WHERE os.status = 'Pending' and os.statusDate IN (SELECT (MAX(os.statusDate)) FROM Order o JOIN o.statesRecord os GROUP BY o.id)";
-		Session session = null;
-		session = sessionFactory.getCurrentSession();
-		
-		Query<?> query = session.createQuery(hql);
-		List<Order> orders = (List<Order>) query.list();
-		return orders;
-	}
-	
-	@SuppressWarnings("unchecked")
 	public List <Order>  getSentOrders(){
-		String hql = "SELECT DISTINCT(o) FROM Order o JOIN o.statesRecord os WHERE os.status = 'Sending' and os.statusDate IN (SELECT (MAX(os.statusDate)) FROM Order o JOIN o.statesRecord os GROUP BY o.id)";
+		String hql = "SELECT o FROM Order o WHERE o.currentStatus = 'Sending'";
 		Session session = null;
 		session = sessionFactory.getCurrentSession();
 		
