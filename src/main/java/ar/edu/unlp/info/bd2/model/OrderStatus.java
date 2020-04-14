@@ -1,6 +1,5 @@
 package ar.edu.unlp.info.bd2.model;
 
-import java.util.Calendar;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -33,7 +32,7 @@ public class OrderStatus implements Comparable<OrderStatus> {
 
 	public OrderStatus(String status) {
 		this.status = status;
-		this.statusDate = Calendar.getInstance().getTime();
+		this.statusDate = new Date();
 	}
 
 	public OrderStatus(String status, Date date) {

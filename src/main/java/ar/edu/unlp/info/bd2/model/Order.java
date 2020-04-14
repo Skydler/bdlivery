@@ -42,6 +42,9 @@ public class Order {
 	
 	@Column(nullable = false)
 	private Float amount;
+	
+	@Column(nullable = false)
+	private String currentStatus;
 
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	@JoinColumn(name = "id_item")
@@ -72,6 +75,7 @@ public class Order {
 		this.coordY = coordY;
 		this.client = client;
 		this.amount = 0F;
+		this.currentStatus = Order.PENDING;
 		this.items = new ArrayList<Item>();
 		this.statesRecord = new ArrayList<OrderStatus>();
 		this.statesRecord.add(new OrderStatus(Order.PENDING, orderDate));
@@ -136,6 +140,14 @@ public class Order {
 
 	public void setStatus(ArrayList<OrderStatus> statesRecord) {
 		this.statesRecord = statesRecord;
+	}
+
+	public String getCurrentStatus() {
+		return currentStatus;
+	}
+
+	public void setCurrentStatus(String currentStatus) {
+		this.currentStatus = currentStatus;
 	}
 
 	public User getClient() {
