@@ -113,7 +113,7 @@ public class DBliveryRepository {
 
 	@SuppressWarnings("unchecked")
 	public List<Supplier> getTopNSuppliersInSentOrders(int n){
-		String hql = "SELECT s FROM Order o JOIN o.items i JOIN i.product p JOIN p.supplier s WHERE o.currentStatus = 'Sending' GROUP BY s.id ORDER BY COUNT(p) DESC";
+		String hql = "SELECT s FROM Order o JOIN o.items i JOIN i.product p JOIN p.supplier s GROUP BY s ORDER BY COUNT(*) DESC";
 		
 		Session session = null;
 		session = sessionFactory.getCurrentSession();
@@ -213,7 +213,7 @@ public class DBliveryRepository {
 		List<Order> orders = (List<Order>) query.list();
 		return orders;
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	public List<Order> getOrderWithMoreQuantityOfProducts(Date day) {
 		String hql = "SELECT o FROM Order o JOIN o.items i WHERE o.orderDate = :day GROUP BY o ORDER BY COUNT(i) DESC";
