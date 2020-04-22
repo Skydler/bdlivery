@@ -18,6 +18,9 @@ public class DBliveryServiceImpl implements DBliveryService {
 
 	private DBliveryRepository repository;
 
+	private static final String ORDER_NOT_FOUND = "No existe la orden para el id dado";
+	private static final String PRODUCT_NOT_FOUND = "No existe el producto para el id dado";
+
 	public DBliveryServiceImpl(DBliveryRepository repository) {
 		this.repository = repository;
 	}
@@ -26,7 +29,7 @@ public class DBliveryServiceImpl implements DBliveryService {
 	public Order addProduct(Long order, Long quantity, Product product) throws DBliveryException {
 		Item item = new Item(quantity, product);
 		Order actualOrder = this.getOrderById(order)
-				.orElseThrow(() -> new DBliveryException("No existe la orden para el id dado"));
+				.orElseThrow(() -> new DBliveryException(DBliveryServiceImpl.ORDER_NOT_FOUND));
 		List<Item> orderItems = actualOrder.getProducts();
 		orderItems.add(item);
 		repository.saveObject(actualOrder);
@@ -36,14 +39,15 @@ public class DBliveryServiceImpl implements DBliveryService {
 	@Override
 	public boolean canCancel(Long order) throws DBliveryException {
 		Order actualOrder = this.getOrderById(order)
-				.orElseThrow(() -> new DBliveryException("No existe la orden para el id dado"));
+				.orElseThrow(() -> new DBliveryException(DBliveryServiceImpl.ORDER_NOT_FOUND));
 		return actualOrder.isItemsEmpty() && actualOrder.getActualStatus().getStatus().equals(Order.PENDING);
 	}
 
 	@Override
 	public Order cancelOrder(Long order) throws DBliveryException {
 		Order actualOrder = this.getOrderById(order)
-				.orElseThrow(() -> new DBliveryException("No existe la orden para el id dado"));
+				.orElseThrow(() -> new DBliveryException(DBliveryServiceImpl.ORDER_NOT_FOUND));
+
 		if (!this.canCancel(order)) {
 			throw new DBliveryException("The order can't be cancelled");
 		} else {
@@ -56,7 +60,8 @@ public class DBliveryServiceImpl implements DBliveryService {
 	@Override
 	public Order cancelOrder(Long order, Date date) throws DBliveryException {
 		Order actualOrder = this.getOrderById(order)
-				.orElseThrow(() -> new DBliveryException("No existe la orden para el id dado"));
+				.orElseThrow(() -> new DBliveryException(DBliveryServiceImpl.ORDER_NOT_FOUND));
+
 		if (!this.canCancel(order)) {
 			throw new DBliveryException("The order can't be cancelled");
 		} else {
@@ -69,14 +74,14 @@ public class DBliveryServiceImpl implements DBliveryService {
 	@Override
 	public boolean canDeliver(Long order) throws DBliveryException {
 		Order actualOrder = this.getOrderById(order)
-				.orElseThrow(() -> new DBliveryException("No existe la orden para el id dado"));
+				.orElseThrow(() -> new DBliveryException(DBliveryServiceImpl.ORDER_NOT_FOUND));
 		return !actualOrder.isItemsEmpty() && actualOrder.getActualStatus().getStatus().equals(Order.PENDING);
 	}
 
 	@Override
 	public boolean canFinish(Long id) throws DBliveryException {
 		Order actualOrder = this.getOrderById(id)
-				.orElseThrow(() -> new DBliveryException("No existe la orden para el id dado"));
+				.orElseThrow(() -> new DBliveryException(DBliveryServiceImpl.ORDER_NOT_FOUND));
 		return !actualOrder.isItemsEmpty() && actualOrder.getActualStatus().getStatus().equals(Order.SENDING);
 	}
 
@@ -118,7 +123,7 @@ public class DBliveryServiceImpl implements DBliveryService {
 	@Override
 	public Order deliverOrder(Long order, User deliveryUser) throws DBliveryException {
 		Order actualOrder = this.getOrderById(order)
-				.orElseThrow(() -> new DBliveryException("No existe la orden para el id dado"));
+				.orElseThrow(() -> new DBliveryException(DBliveryServiceImpl.ORDER_NOT_FOUND));
 		if (!this.canDeliver(order)) {
 			throw new DBliveryException("The order can't be delivered");
 		} else {
@@ -132,7 +137,7 @@ public class DBliveryServiceImpl implements DBliveryService {
 	@Override
 	public Order deliverOrder(Long order, User deliveryUser, Date date) throws DBliveryException {
 		Order actualOrder = this.getOrderById(order)
-				.orElseThrow(() -> new DBliveryException("No existe la orden para el id dado"));
+				.orElseThrow(() -> new DBliveryException(DBliveryServiceImpl.ORDER_NOT_FOUND));
 		if (!this.canDeliver(order)) {
 			throw new DBliveryException("The order can't be delivered");
 		} else {
@@ -146,7 +151,7 @@ public class DBliveryServiceImpl implements DBliveryService {
 	@Override
 	public Order finishOrder(Long order) throws DBliveryException {
 		Order actualOrder = this.getOrderById(order)
-				.orElseThrow(() -> new DBliveryException("No existe la orden para el id dado"));
+				.orElseThrow(() -> new DBliveryException(DBliveryServiceImpl.ORDER_NOT_FOUND));
 		if (!this.canFinish(order)) {
 			throw new DBliveryException("The order can't be finished");
 		} else {
@@ -159,7 +164,7 @@ public class DBliveryServiceImpl implements DBliveryService {
 	@Override
 	public Order finishOrder(Long order, Date date) throws DBliveryException {
 		Order actualOrder = this.getOrderById(order)
-				.orElseThrow(() -> new DBliveryException("No existe la orden para el id dado"));
+				.orElseThrow(() -> new DBliveryException(DBliveryServiceImpl.ORDER_NOT_FOUND));
 		if (!this.canFinish(order)) {
 			throw new DBliveryException("The order can't be finished");
 		} else {
@@ -183,8 +188,7 @@ public class DBliveryServiceImpl implements DBliveryService {
 
 	@Override
 	public List<Order> getAllOrdersMadeByUser(String username) {
-		// TODO Auto-generated method stub
-		return null;
+		return repository.getAllOrdersMadeByUser(username);
 	}
 
 	@Override
@@ -352,7 +356,7 @@ public class DBliveryServiceImpl implements DBliveryService {
 	@Override
 	public Product updateProductPrice(Long id, Float price, Date startDate) throws DBliveryException {
 		Product prod = this.getProductById(id)
-				.orElseThrow(() -> new DBliveryException("No existe el producto para el id dado"));
+				.orElseThrow(() -> new DBliveryException(DBliveryServiceImpl.PRODUCT_NOT_FOUND));
 		prod.addPrice(price, startDate);
 		repository.saveObject(prod);
 		return prod;

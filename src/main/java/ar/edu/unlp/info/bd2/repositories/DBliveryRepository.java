@@ -73,4 +73,12 @@ public class DBliveryRepository {
 		List<Product> prods = query.list();
 		return prods;
 	}
+
+
+    // ------------------ Segundo Enunciado ------------------
+
+    // public List<Order> getAllOrdersMadeByUser(String username) {
+		// String hql = "SELECT u.orders FROM User u WHERE u.username = :username";
+
+    // }
 }
