@@ -226,8 +226,7 @@ public class DBliveryServiceImpl implements DBliveryService {
 
 	@Override
 	public List<Order> getDeliveredOrdersSameDay() {
-		// TODO Auto-generated method stub
-		return null;
+		return repository.getDeliveredOrdersSameDay();
 	}
 
 	@Override
@@ -285,8 +284,7 @@ public class DBliveryServiceImpl implements DBliveryService {
 
 	@Override
 	public List<Order> getSentMoreOneHour() {
-		// TODO Auto-generated method stub
-		return null;
+		return repository.getSentMoreOneHour();
 	}
 
 	@Override
@@ -321,8 +319,7 @@ public class DBliveryServiceImpl implements DBliveryService {
 
 	@Override
 	public List<Supplier> getTopNSuppliersInSentOrders(int n) {
-		// TODO Auto-generated method stub
-		return null;
+		return repository.getTopNSuppliersInSentOrders(n);
 	}
 
 	@Override

@@ -113,7 +113,7 @@ public class DBliveryRepository {
 
 	@SuppressWarnings("unchecked")
 	public List<Supplier> getTopNSuppliersInSentOrders(int n){
-		String hql = "SELECT s FROM Order o JOIN o.items i JOIN i.product p JOIN p.supplier s WHERE o.actualState = 'Sending' and o.statusDate IN (SELECT (MAX(os.statusDate)) FROM Order o JOIN o.statesRecord os GROUP BY o.id) ORDER BY COUNT(p.supplier)";
+		String hql = "SELECT s FROM Order o JOIN o.items i JOIN i.product p JOIN p.supplier s WHERE o.currentStatus = 'Sending' GROUP BY s.id ORDER BY COUNT(p) DESC";
 		
 		Session session = null;
 		session = sessionFactory.getCurrentSession();
@@ -190,15 +190,27 @@ public class DBliveryRepository {
 		return null;
 	}*/
 	
-	/*@SuppressWarnings("unchecked")
+	@SuppressWarnings("unchecked")
 	public List <Order>  getSentMoreOneHour(){
-		return null;
-	}*/
+		String hql = "SELECT o.* FROM Orders o INNER JOIN OrderStatus s1 ON o.id=s1.id_orderStatus INNER JOIN OrderStatus s2 ON s1.id_orderStatus=s2.id_orderStatus WHERE s1.status='Pending' AND s2.status='Sending' AND DATEDIFF(s2.statusDate, s1.statusDate) >= 1";
+		Session session = null;
+		session = sessionFactory.getCurrentSession();
+		
+		Query<?> query = session.createSQLQuery(hql);
+		List<Order> orders = (List<Order>) query.list();
+		return orders;
+	}
 	
-	/*@SuppressWarnings("unchecked")
+	@SuppressWarnings("unchecked")
 	public List <Order>  getDeliveredOrdersSameDay(){
-		return null;
-	}*/
+		String hql = "SELECT o.* FROM Orders o INNER JOIN OrderStatus s1 ON o.id=s1.id_orderStatus INNER JOIN OrderStatus s2 ON s1.id_orderStatus=s2.id_orderStatus WHERE s1.status='Pending' AND s2.status='Delivered' AND DATEDIFF(s2.statusDate,s1.statusDate) < 1";
+		Session session = null;
+		session = sessionFactory.getCurrentSession();
+		
+		Query<?> query = session.createSQLQuery(hql);
+		List<Order> orders = (List<Order>) query.list();
+		return orders;
+	}
 	
 	@SuppressWarnings("unchecked")
 	public List<Order> getOrderWithMoreQuantityOfProducts(Date day) {
