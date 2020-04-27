@@ -242,8 +242,7 @@ public class DBliveryServiceImpl implements DBliveryService {
 
 	@Override
 	public List<Order> getPendingOrders() {
-		// TODO Auto-generated method stub
-		return null;
+		return repository.getPendingOrders();
 	}
 
 	@Override
@@ -286,8 +285,7 @@ public class DBliveryServiceImpl implements DBliveryService {
 
 	@Override
 	public List<Order> getSentOrders() {
-		// TODO Auto-generated method stub
-		return null;
+		return repository.getSentOrders();
 	}
 
 	@Override
@@ -307,14 +305,12 @@ public class DBliveryServiceImpl implements DBliveryService {
 
 	@Override
 	public List<Product> getTop10MoreExpensiveProducts() {
-		// TODO Auto-generated method stub
-		return null;
+		return repository.getTop10MoreExpensiveProducts();
 	}
 
 	@Override
 	public List<User> getTop6UsersMoreOrders() {
-		// TODO Auto-generated method stub
-		return null;
+		return repository.getTop6UsersMoreOrders();
 	}
 
 	@Override
@@ -343,8 +339,7 @@ public class DBliveryServiceImpl implements DBliveryService {
 
 	@Override
 	public List<User> getUsersSpendingMoreThan(Float amount) {
-		// TODO Auto-generated method stub
-		return null;
+		return repository.getUsersSpendingMoreThan(amount);
 	}
 
 	@Override

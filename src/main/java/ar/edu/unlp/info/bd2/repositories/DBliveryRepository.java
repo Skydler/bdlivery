@@ -97,7 +97,119 @@ public class DBliveryRepository {
 		List<Order> orders = (List<Order>) query.list();
 		return orders;
 	}
-
+	
+	@SuppressWarnings("unchecked")
+		public List<User> getUsersSpendingMoreThan(Float amount){
+			String hql = "SELECT o.client FROM Order o JOIN o.client WHERE o.amount > :amount";
+			
+			Session session = null;
+			session = sessionFactory.getCurrentSession();
+			
+			Query query = session.createQuery(hql);
+			query.setParameter("amount", amount);
+			List<User> users = query.list();
+			return users;
+		}
+	
+	
+	
+	@SuppressWarnings("unchecked")
+	public List<Supplier> getTopNSuppliersInSentOrders(int n){
+		String hql = "SELECT s FROM Order o JOIN o.items i JOIN i.product p JOIN p.supplier s WHERE o.actualState = 'Sending' and o.statusDate IN (SELECT (MAX(os.statusDate)) FROM Order o JOIN o.statesRecord os GROUP BY o.id) ORDER BY COUNT(p.supplier)";
+		
+		Session session = null;
+		session = sessionFactory.getCurrentSession();
+		
+		Query query = session.createQuery(hql);
+		query.setMaxResults(n);
+		List<Supplier> suppliers = query.list();
+		return suppliers;
+	}
+	
+	@SuppressWarnings("unchecked")
+	public List<Product> getTop10MoreExpensiveProducts(){
+		String hql ="SELECT p FROM Product p JOIN p.prices price WHERE price.value > (SELECT MIN(price.value) FROM Price price) ORDER BY price.value DESC";
+		
+		Session session = null;
+		session = sessionFactory.getCurrentSession();
+		
+		Query query = session.createQuery(hql);
+		query.setMaxResults(9);
+		List<Product> products = (List<Product>) query.list();
+		return products;
+	}
+	
+	@SuppressWarnings("unchecked")
+	public List<User> getTop6UsersMoreOrders(){
+		String hql = "SELECT u FROM User u JOIN u.orders o GROUP BY u.id ORDER BY COUNT(o)";
+		Session session = null;
+		session = sessionFactory.getCurrentSession();
+		
+		Query<?> query = session.createQuery(hql);
+		query.setMaxResults(6);
+		List<User> users = (List<User>) query.list();
+		return users;
+	}
+	
+	@SuppressWarnings("unchecked")
+	public List <Order>  getCancelledOrdersInPeriod(Date startDate, Date endDate){
+		String hql = "SELECT DISTINCT(o) FROM Order o JOIN o.statesRecord os WHERE os.status = 'Cancelled' and os.statusDate IN (SELECT os.statusDate FROM Order o JOIN o.statesRecord os WHERE os.statusDate BETWEEN :startDate and :endDate GROUP BY o.id)";
+		Session session = null;
+		session = sessionFactory.getCurrentSession();
+		
+		Query<?> query = session.createQuery(hql);
+		List<Order> orders = (List<Order>) query.list();
+		return orders;
+	}
+	
+	@SuppressWarnings("unchecked")
+	public List <Order>  getPendingOrders(){
+		String hql = "SELECT DISTINCT(o) FROM Order o JOIN o.statesRecord os WHERE os.status = 'Pending' and os.statusDate IN (SELECT (MAX(os.statusDate)) FROM Order o JOIN o.statesRecord os GROUP BY o.id)";
+		Session session = null;
+		session = sessionFactory.getCurrentSession();
+		
+		Query<?> query = session.createQuery(hql);
+		List<Order> orders = (List<Order>) query.list();
+		return orders;
+	}
+	
+	@SuppressWarnings("unchecked")
+	public List <Order>  getSentOrders(){
+		String hql = "SELECT DISTINCT(o) FROM Order o JOIN o.statesRecord os WHERE os.status = 'Sending' and os.statusDate IN (SELECT (MAX(os.statusDate)) FROM Order o JOIN o.statesRecord os GROUP BY o.id)";
+		Session session = null;
+		session = sessionFactory.getCurrentSession();
+		
+		Query<?> query = session.createQuery(hql);
+		List<Order> orders = (List<Order>) query.list();
+		return orders;
+	}
+	
+	@SuppressWarnings("unchecked")
+	public List <Order>  getDeliveredOrdersInPeriod(Date startDate, Date endDate){
+		String hql = "SELECT DISTINCT(o) FROM Order o JOIN o.statesRecord os WHERE os.status = 'Delivered' and os.statusDate IN (SELECT os.statusDate FROM Order o JOIN o.statesRecord os WHERE os.statusDate BETWEEN :startDate and :endDate GROUP BY o.id)";
+		Session session = null;
+		session = sessionFactory.getCurrentSession();
+		
+		Query<?> query = session.createQuery(hql);
+		List<Order> orders = (List<Order>) query.list();
+		return orders;
+	}
+	
+	/*@SuppressWarnings("unchecked")
+	public List <Order>  getDeliveredOrdersForUser(String username){
+		return null;
+	}*/
+	
+	/*@SuppressWarnings("unchecked")
+	public List <Order>  getSentMoreOneHour(){
+		return null;
+	}*/
+	
+	/*@SuppressWarnings("unchecked")
+	public List <Order>  getDeliveredOrdersSameDay(){
+		return null;
+	}*/
+	
 	@SuppressWarnings("unchecked")
 	public List<Order> getOrderWithMoreQuantityOfProducts(Date day) {
 		String hql = "SELECT o FROM Order o JOIN o.items i WHERE o.orderDate = :day GROUP BY o.id ORDER BY COUNT(i) DESC";
