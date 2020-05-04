@@ -211,13 +211,11 @@ public class DBliveryRepository {
 
 	@SuppressWarnings("unchecked")
 	public List<Order> getOrderWithMoreQuantityOfProducts(Date day) {
-		String hql = "SELECT o FROM Order o JOIN o.items i WHERE o.orderDate = :day GROUP BY o ORDER BY COUNT(i) DESC";
+		String hql = "SELECT ord FROM Order ord JOIN ord.items it WHERE ord.orderDate = :day GROUP BY ord HAVING SUM(it.quantity) >= ALL (SELECT SUM(i.quantity) FROM Order o JOIN o.items i WHERE o.orderDate = :day GROUP BY o)";
 
 		Session session = sessionFactory.getCurrentSession();
 		Query<?> query = session.createQuery(hql);
 		query.setParameter("day", day);
-		query.setFirstResult(0);
-		query.setMaxResults(1);
 		List<Order> orders = (List<Order>) query.list();
 		return orders;
 	}
