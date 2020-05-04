@@ -58,4 +58,17 @@ PARTE 2
 PARTE 3
 =======
 
-10)
+10) Si, está definido el indice por defecto de mongo, es decir "_id_"
+11) Sin indice, la consulta tardó alrededor de 160ms. Mientras que con indice la consulta tardó alrededor de 370ms.
+12) Sin indice, la consulta tardó alrededor de 1140ms. Mientras que con indice la consulta tardó alrededor de 1260ms.
+
+
+PARTE 4
+=======
+
+13) db.reservations.aggregate([{ $sample: { size: 5 }}]).pretty()
+14) var nuevaColl = db.apartments.aggregate([{$geoNear:{near:{type:"Point", coordinates: [-0.127718, 51.507451]}, distanceField: "distanceToCenter", maxDistance: 15000}}]).pretty()
+    db.apartsNearLondon.insertMany(nuevaColl.toArray())
+15) var nuevaColl = db.apartsNearLondon.aggregate([{$lookup:{from:"reservations", localField:"name", foreignField: "apartmentName", as: "reservas"}}])
+    db.apartsWithReservationNearLondon.insertMany(nuevaColl.toArray())
+16) db.apartsWithReservationNearLondon.aggregate([{$project:{name:1, avgPrice:{$avg:"$reservas.amount"}}}])
