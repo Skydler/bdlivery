@@ -33,3 +33,29 @@ Fuentes:
 https://docs.mongodb.com/manual/core/data-model-design/#data-modeling-embedding
 https://docs.mongodb.com/manual/core/data-model-design/#data-modeling-referencing
 https://docs.mongodb.com/manual/reference/database-references/
+
+
+
+PARTE 2
+=======
+
+5) La diferencia es que se agregó un nuevo campo al documento creado, el id del documento determinado por un ObjectId().
+
+6) 
+    * db.apartments.find({capacity: 3}).pretty()
+    * db.apartments.find({capacity: { $gte: 4}}).pretty()
+    * db.apartments.find({ services: { $elemMatch: { $eq: 'wifi'} } }).pretty()
+    * db.apartments.find({ name: /Apartment/ }).pretty()
+    * db.apartments.find({ name: /Apartment/, capacity: { $gt: 3}}).pretty()
+    * db.apartments.find({ services: { $exists: false } }).pretty()
+    * db.apartments.find({ services: { $exists: false } }, {name: 1, _id: 0 }).pretty()
+
+7) db.apartments.updateOne({name: 'Duplex Floor'}, { $set: {capacity:5}})
+8) db.apartments.updateOne({name: 'Nice apt for 6'}, { $addToSet: {services: 'laundry' }})
+9) db.apartments.updateMany({services: {$elemMatch:{$eq:'wifi'}}}, {$inc: {capacity: 1}})
+
+
+PARTE 3
+=======
+
+10)
