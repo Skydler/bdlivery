@@ -187,11 +187,6 @@ public class DBliveryRepository {
 		return orders;
 	}
 	
-	/*@SuppressWarnings("unchecked")
-	public List <Order>  getDeliveredOrdersForUser(String username){
-		return null;
-	}*/
-	
 	@SuppressWarnings("unchecked")
 	public List <Order>  getSentMoreOneHour(){
 		String hql = "SELECT o.* FROM Orders o INNER JOIN OrderStatus s1 ON o.id=s1.id_orderStatus INNER JOIN OrderStatus s2 ON s1.id_orderStatus=s2.id_orderStatus WHERE s1.status='Pending' AND s2.status='Sending' AND DATEDIFF(s2.statusDate, s1.statusDate) >= 1";
@@ -239,7 +234,7 @@ public class DBliveryRepository {
 	
 	@SuppressWarnings("unchecked")
 	public List<Object[]> getProductsWithPriceAt(Date day) {
-		String hql = "SELECT p, price.value FROM Product p JOIN p.prices price WHERE :day BETWEEN price.startDate AND price.endDate";
+		String hql = "SELECT p, price.value FROM Product p JOIN p.prices price WHERE (:day >= price.startDate AND price.endDate IS NULL) OR (:day BETWEEN price.startDate AND price.endDate)";
 
 		Session session = sessionFactory.getCurrentSession();
 		Query<?> query = session.createQuery(hql);
