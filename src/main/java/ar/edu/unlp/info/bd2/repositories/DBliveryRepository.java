@@ -304,7 +304,7 @@ public class DBliveryRepository {
 	}
 
 	public Product getBestSellingProduct() {
-		String hql = "SELECT p FROM Item i JOIN i.product p GROUP BY p ORDER BY COUNT(i.quantity) DESC";
+		String hql = "SELECT p FROM Item i JOIN i.product p GROUP BY p ORDER BY SUM(i.quantity) DESC";
 
 		Session session = sessionFactory.getCurrentSession();
 		TypedQuery<Product> query = session.createQuery(hql, Product.class);
