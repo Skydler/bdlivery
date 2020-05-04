@@ -1,0 +1,35 @@
+PARTE 1
+=======
+
+1)
+    * El concepto de base de datos es el mismo
+    * A lo que se conoce como Tabla en RDBMS en Mongo se lo conoce como Colección.
+    * A lo que se conoce como Fila en RDBMS en Mongo se lo conoce como Documento.
+    * A lo que se conoce como Columna en RDBMS en Mongo se lo conoce como Campo.
+
+2) En MongoDB las operaciones realizadas sobre un solo documento son atómicas, aún si la operación involucra multiples documentos embebidos dentro del mismo.
+Por otra parte si se realizara una modificación sobre varios documentos (ej: db.collection.updateMany()), la modificación de cada uno de los documentos es atómica, pero no será atómica la operación como un todo.
+Por otra parte, MongoDB tiene soporte para transacciones atomicas a nivel multi-documento a partir de la versión 4.0. Desafortunadamente las transacciones de este tipo conllevan un gran costo en cuanto al performance de las operaciones realizadas.
+
+Fuentes: 
+https://docs.mongodb.com/manual/core/transactions/
+https://docs.mongodb.com/manual/core/data-modeling-introduction/index.html
+
+3) MongoDB soporta indices de los siguientes tipos:
+    * Single field: Son indices formados por un solo campo de un documento.
+    * Compound index: Son indices compuestos, es decir formados por varios campos de un documento.
+    * Multikey index: Son indices compuestos por arrays, MongoDB crea además indices para cada uno de los elementos del array.
+    * Geospatial index: Este tipo de indices se utiliza para indexar coordenadas geoespaciales. Da soporte para tipos de de indices "2d" y "2dsphere".
+    * Text index: Como el nombre lo indica permite crear indices para campos que tienen strings en su contenido.
+    * Hashed index: Son indices formados por el valor del hash de un dato en un campo.
+
+Fuente: https://docs.mongodb.com/manual/indexes/
+
+4) No, en MongoDB no existen claves foráneas.
+Sin embargo, se sabe que en MongoDB se pueden utilizar los documentos embebidos para representar las relaciones entre los datos, pero también se pueden utilizar mecanismos de multi-documentos para obtener modelos normalizados.
+En este último caso, las relaciones se representan mediante referencias entre los documentos, parecidas al sistema de claves foraneas de las bases de datos relacionales.
+
+Fuentes:
+https://docs.mongodb.com/manual/core/data-model-design/#data-modeling-embedding
+https://docs.mongodb.com/manual/core/data-model-design/#data-modeling-referencing
+https://docs.mongodb.com/manual/reference/database-references/
