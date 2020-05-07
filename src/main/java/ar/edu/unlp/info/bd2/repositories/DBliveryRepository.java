@@ -97,14 +97,14 @@ public class DBliveryRepository {
 		List<Order> orders = (List<Order>) query.list();
 		return orders;
 	}
-	
+
 	@SuppressWarnings("unchecked")
 		public List<User> getUsersSpendingMoreThan(Float amount){
 			String hql = "SELECT o.client FROM Order o JOIN o.client WHERE o.amount > :amount";
-			
+
 			Session session = null;
 			session = sessionFactory.getCurrentSession();
-			
+
 			Query<?> query = session.createQuery(hql);
 			query.setParameter("amount", amount);
 			List<User> users = (List<User>) query.list();
@@ -113,15 +113,8 @@ public class DBliveryRepository {
 
 	@SuppressWarnings("unchecked")
 	public List<Supplier> getTopNSuppliersInSentOrders(int n){
-<<<<<<< HEAD
 		String hql = "SELECT s FROM Order o JOIN o.items i JOIN i.product p JOIN p.supplier s WHERE o.currentStatus='Sending' GROUP BY s ORDER BY SUM(i.quantity) DESC";
-=======
-		String hql = "SELECT s FROM Order o JOIN o.items i JOIN i.product p JOIN p.supplier s WHERE o.currentStatus='Sending' GROUP BY s ORDER BY COUNT(*) DESC";
-		
-		Session session = null;
-		session = sessionFactory.getCurrentSession();
->>>>>>> Termine esas consultas q faltaban
-		
+
 		Session session = sessionFactory.getCurrentSession();
 		Query<?> query = session.createQuery(hql);
 		query.setFirstResult(0);
@@ -129,11 +122,11 @@ public class DBliveryRepository {
 		List<Supplier> suppliers = (List<Supplier>) query.list();
 		return suppliers;
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	public List<Product> getTop10MoreExpensiveProducts(){
 		String hql ="SELECT p FROM Product p JOIN p.prices price WHERE price.value > (SELECT MIN(price.value) FROM Price price) ORDER BY price.value DESC";
-		
+
 		Session session = sessionFactory.getCurrentSession();
 		Query<?> query = session.createQuery(hql);
 		query.setFirstResult(0);
@@ -141,7 +134,7 @@ public class DBliveryRepository {
 		List<Product> products = (List<Product>) query.list();
 		return products;
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	public List<User> getTop6UsersMoreOrders(){
 		String hql = "SELECT u FROM User u JOIN u.orders o GROUP BY u.id ORDER BY COUNT(o) DESC";
@@ -153,11 +146,11 @@ public class DBliveryRepository {
 		List<User> users = (List<User>) query.list();
 		return users;
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	public List <Order>  getCancelledOrdersInPeriod(Date startDate, Date endDate){
 		String hql = "SELECT o FROM Order o JOIN o.statesRecord os WHERE os.status = 'Cancelled' AND os.statusDate BETWEEN :startDate AND :endDate";
-		
+
 		Session session = sessionFactory.getCurrentSession();
 		Query<?> query = session.createQuery(hql);
 		query.setParameter("startDate", startDate);
@@ -165,7 +158,7 @@ public class DBliveryRepository {
 		List<Order> orders = (List<Order>) query.list();
 		return orders;
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	public List <Order>  getSentOrders(){
 		String hql = "SELECT o FROM Order o WHERE o.currentStatus = 'Sending'";
@@ -175,11 +168,11 @@ public class DBliveryRepository {
 		List<Order> orders = (List<Order>) query.list();
 		return orders;
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	public List <Order>  getDeliveredOrdersInPeriod(Date startDate, Date endDate){
 		String hql = "SELECT o FROM Order o JOIN o.statesRecord os WHERE os.status = 'Delivered' AND os.statusDate BETWEEN :startDate AND :endDate";
-		
+
 		Session session = sessionFactory.getCurrentSession();
 		Query<?> query = session.createQuery(hql);
 		query.setParameter("startDate", startDate);
@@ -187,28 +180,22 @@ public class DBliveryRepository {
 		List<Order> orders = (List<Order>) query.list();
 		return orders;
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	public List <Order>  getSentMoreOneHour(){
 		String hql = "SELECT o FROM Order o JOIN o.statesRecord s1 JOIN o.statesRecord s2 WHERE s1.status='Pending' AND s2.status='Sending' AND (s2.statusDate-s1.statusDate) >= 1";
-		
+
 		Session session = sessionFactory.getCurrentSession();
 		Query<?> query = session.createQuery(hql);
 		List<Order> orders = (List<Order>) query.list();
 		return orders;
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	public List <Order>  getDeliveredOrdersSameDay(){
 		String hql = "SELECT o FROM Order o JOIN o.statesRecord s1 JOIN o.statesRecord s2 WHERE s1.status='Pending' AND s2.status='Delivered' AND DATEDIFF(s2.statusDate,s1.statusDate) < 1";
-<<<<<<< HEAD
 
 		Session session = sessionFactory.getCurrentSession();
-=======
-		Session session = null;
-		session = sessionFactory.getCurrentSession();
-		
->>>>>>> Termine esas consultas q faltaban
 		Query<?> query = session.createQuery(hql);
 		List<Order> orders = (List<Order>) query.list();
 		return orders;
@@ -234,7 +221,7 @@ public class DBliveryRepository {
 		List<Product> products = (List<Product>) query.list();
 		return products;
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	public List<Object[]> getProductsWithPriceAt(Date day) {
 		String hql = "SELECT p, price.value FROM Product p JOIN p.prices price WHERE (:day >= price.startDate AND price.endDate IS NULL) OR (:day BETWEEN price.startDate AND price.endDate)";
