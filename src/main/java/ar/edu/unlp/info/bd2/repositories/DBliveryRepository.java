@@ -167,9 +167,8 @@ public class DBliveryRepository {
 	@SuppressWarnings("unchecked")
 	public List <Order>  getSentOrders(){
 		String hql = "SELECT o FROM Order o WHERE o.currentStatus = 'Sending'";
-		Session session = null;
-		session = sessionFactory.getCurrentSession();
-		
+
+		Session session = sessionFactory.getCurrentSession();
 		Query<?> query = session.createQuery(hql);
 		List<Order> orders = (List<Order>) query.list();
 		return orders;
@@ -189,11 +188,10 @@ public class DBliveryRepository {
 	
 	@SuppressWarnings("unchecked")
 	public List <Order>  getSentMoreOneHour(){
-		String hql = "SELECT o.* FROM Orders o INNER JOIN OrderStatus s1 ON o.id=s1.id_orderStatus INNER JOIN OrderStatus s2 ON s1.id_orderStatus=s2.id_orderStatus WHERE s1.status='Pending' AND s2.status='Sending' AND DATEDIFF(s2.statusDate, s1.statusDate) >= 1";
-		Session session = null;
-		session = sessionFactory.getCurrentSession();
+		String hql = "SELECT o FROM Order o JOIN o.statesRecord s1 JOIN o.statesRecord s2 WHERE s1.status='Pending' AND s2.status='Sending' AND (s2.statusDate-s1.statusDate) >= 1";
 		
-		Query<?> query = session.createSQLQuery(hql);
+		Session session = sessionFactory.getCurrentSession();
+		Query<?> query = session.createQuery(hql);
 		List<Order> orders = (List<Order>) query.list();
 		return orders;
 	}
