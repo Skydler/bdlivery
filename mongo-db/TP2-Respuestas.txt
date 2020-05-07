@@ -58,9 +58,17 @@ PARTE 2
 PARTE 3
 =======
 
-10) Si, está definido el indice por defecto de mongo, es decir "_id_"
-11) Sin indice, la consulta tardó alrededor de 160ms. Mientras que con indice la consulta tardó alrededor de 370ms.
-12) Sin indice, la consulta tardó alrededor de 1140ms. Mientras que con indice la consulta tardó alrededor de 1260ms.
+10) db.apartments.getIndexes()
+Si, está definido el indice por defecto de mongo, es decir "_id_"
+11) 
+    * db.apartments.createIndex({ name: 1})
+    * db.apartments.find({name:/11/}).explain("executionStats")
+Sin indice, la consulta tardó alrededor de 160ms. Mientras que con indice la consulta tardó alrededor de 370ms.
+12)
+    * db.apartments.createIndex({location: "2dsphere"})
+    * var londres = "Poligono definido en greaterlondon.geojson"
+    * db.apartments.find({location: { $geoWithin: { $geometry: londres }}}).explain("executionStats")
+Sin indice, la consulta tardó alrededor de 1140ms. Mientras que con indice la consulta tardó alrededor de 1260ms.
 
 
 PARTE 4
