@@ -113,7 +113,7 @@ public class DBliveryRepository {
 
 	@SuppressWarnings("unchecked")
 	public List<Supplier> getTopNSuppliersInSentOrders(int n){
-		String hql = "SELECT s FROM Order o JOIN o.items i JOIN i.product p JOIN p.supplier s GROUP BY s ORDER BY COUNT(*) DESC";
+		String hql = "SELECT s FROM Order o JOIN o.items i JOIN i.product p JOIN p.supplier s WHERE o.currentStatus='Sending' GROUP BY s ORDER BY COUNT(*) DESC";
 		
 		Session session = null;
 		session = sessionFactory.getCurrentSession();
@@ -198,11 +198,11 @@ public class DBliveryRepository {
 	
 	@SuppressWarnings("unchecked")
 	public List <Order>  getDeliveredOrdersSameDay(){
-		String hql = "SELECT o.* FROM Orders o INNER JOIN OrderStatus s1 ON o.id=s1.id_orderStatus INNER JOIN OrderStatus s2 ON s1.id_orderStatus=s2.id_orderStatus WHERE s1.status='Pending' AND s2.status='Delivered' AND DATEDIFF(s2.statusDate,s1.statusDate) < 1";
+		String hql = "SELECT o FROM Order o JOIN o.statesRecord s1 JOIN o.statesRecord s2 WHERE s1.status='Pending' AND s2.status='Delivered' AND DATEDIFF(s2.statusDate,s1.statusDate) < 1";
 		Session session = null;
 		session = sessionFactory.getCurrentSession();
 		
-		Query<?> query = session.createSQLQuery(hql);
+		Query<?> query = session.createQuery(hql);
 		List<Order> orders = (List<Order>) query.list();
 		return orders;
 	}
@@ -241,9 +241,9 @@ public class DBliveryRepository {
 
 	@SuppressWarnings("unchecked")
 	public List<Order> getOrdersCompleteMorethanOneDay() {
-		String hql = "SELECT o.* FROM Orders o INNER JOIN OrderStatus s1 ON o.id=s1.id_orderStatus INNER JOIN OrderStatus s2 ON s1.id_orderStatus=s2.id_orderStatus WHERE s1.status='Pending' AND s2.status='Delivered' AND DATEDIFF(s2.statusDate,s1.statusDate) >= 1";
+		String hql = "SELECT o FROM Order o JOIN o.statesRecord s1 JOIN o.statesRecord s2 WHERE s1.status='Pending' AND s2.status='Delivered' AND DATEDIFF(s2.statusDate,s1.statusDate) >= 1";
 		Session session = sessionFactory.getCurrentSession();
-		Query<?> query = session.createSQLQuery(hql);
+		Query<?> query = session.createQuery(hql);
 		List<Order> orders = (List<Order>) query.list();
 		return orders;
 	}
