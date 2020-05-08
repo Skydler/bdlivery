@@ -113,7 +113,14 @@ public class DBliveryRepository {
 
 	@SuppressWarnings("unchecked")
 	public List<Supplier> getTopNSuppliersInSentOrders(int n){
+<<<<<<< HEAD
 		String hql = "SELECT s FROM Order o JOIN o.items i JOIN i.product p JOIN p.supplier s WHERE o.currentStatus='Sending' GROUP BY s ORDER BY SUM(i.quantity) DESC";
+=======
+		String hql = "SELECT s FROM Order o JOIN o.items i JOIN i.product p JOIN p.supplier s WHERE o.currentStatus='Sending' GROUP BY s ORDER BY COUNT(*) DESC";
+		
+		Session session = null;
+		session = sessionFactory.getCurrentSession();
+>>>>>>> Termine esas consultas q faltaban
 		
 		Session session = sessionFactory.getCurrentSession();
 		Query<?> query = session.createQuery(hql);
@@ -194,8 +201,14 @@ public class DBliveryRepository {
 	@SuppressWarnings("unchecked")
 	public List <Order>  getDeliveredOrdersSameDay(){
 		String hql = "SELECT o FROM Order o JOIN o.statesRecord s1 JOIN o.statesRecord s2 WHERE s1.status='Pending' AND s2.status='Delivered' AND DATEDIFF(s2.statusDate,s1.statusDate) < 1";
+<<<<<<< HEAD
 
 		Session session = sessionFactory.getCurrentSession();
+=======
+		Session session = null;
+		session = sessionFactory.getCurrentSession();
+		
+>>>>>>> Termine esas consultas q faltaban
 		Query<?> query = session.createQuery(hql);
 		List<Order> orders = (List<Order>) query.list();
 		return orders;
