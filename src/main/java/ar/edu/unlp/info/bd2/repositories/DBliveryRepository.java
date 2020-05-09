@@ -114,7 +114,6 @@ public class DBliveryRepository {
 	@SuppressWarnings("unchecked")
 	public List<Supplier> getTopNSuppliersInSentOrders(int n){
 		String hql = "SELECT s FROM Order o JOIN o.items i JOIN i.product p JOIN p.supplier s WHERE o.currentStatus='Sending' GROUP BY s ORDER BY SUM(i.quantity) DESC";
-
 		Session session = sessionFactory.getCurrentSession();
 		Query<?> query = session.createQuery(hql);
 		query.setFirstResult(0);
@@ -126,7 +125,6 @@ public class DBliveryRepository {
 	@SuppressWarnings("unchecked")
 	public List<Product> getTop10MoreExpensiveProducts(){
 		String hql ="SELECT p FROM Product p JOIN p.prices price WHERE price.value > (SELECT MIN(price.value) FROM Price price) ORDER BY price.value DESC";
-
 		Session session = sessionFactory.getCurrentSession();
 		Query<?> query = session.createQuery(hql);
 		query.setFirstResult(0);
@@ -184,7 +182,6 @@ public class DBliveryRepository {
 	@SuppressWarnings("unchecked")
 	public List <Order>  getSentMoreOneHour(){
 		String hql = "SELECT o FROM Order o JOIN o.statesRecord s1 JOIN o.statesRecord s2 WHERE s1.status='Pending' AND s2.status='Sending' AND (s2.statusDate-s1.statusDate) >= 1";
-
 		Session session = sessionFactory.getCurrentSession();
 		Query<?> query = session.createQuery(hql);
 		List<Order> orders = (List<Order>) query.list();
