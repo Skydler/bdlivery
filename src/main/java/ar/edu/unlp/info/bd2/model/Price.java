@@ -2,32 +2,16 @@ package ar.edu.unlp.info.bd2.model;
 
 import java.util.Date;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
+import org.bson.types.ObjectId;
 
-@Entity
-@Table(name = "Prices")
 public class Price implements Comparable<Price>{
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
-
-	@Column(nullable = false)
+	private ObjectId id;
+	
 	private Float value;
 
-	@Temporal(TemporalType.TIMESTAMP)
-	@Column(nullable = false)
 	private Date startDate;
 
-	@Temporal(TemporalType.TIMESTAMP)
-	@Column(nullable = true)
 	private Date endDate;
 
 	public Price(Float value, Date startDate) {
@@ -39,11 +23,11 @@ public class Price implements Comparable<Price>{
 		
 	}
 
-	public Long getId() {
+	public ObjectId getId() {
 		return id;
 	}
 
-	public void setId(Long id) {
+	public void setId(ObjectId id) {
 		this.id = id;
 	}
 

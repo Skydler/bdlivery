@@ -5,40 +5,20 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
-import javax.persistence.Table;
+import org.bson.types.ObjectId;
 
 import org.joda.time.LocalDate;
 
-@Entity
-@Table(name = "Products")
 public class Product {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
+	private ObjectId id;
 
-	@Column(nullable = false)
 	private String name;
 
-	@Column(nullable = false)
 	private Float weight;
 
-	@OneToOne()
-	@JoinColumn(name = "id_supplier", nullable = false)
 	private Supplier supplier;
 
-	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-	@JoinColumn(name = "id_product", nullable = false)
 	private List<Price> prices;
 
 	public Product(String name, Float currentPrice, Float weight, Supplier supplier) {
@@ -63,11 +43,11 @@ public class Product {
 
 	}
 
-	public Long getId() {
+	public ObjectId getId() {
 		return id;
 	}
 
-	public void setId(Long id) {
+	public void setId(ObjectId id) {
 		this.id = id;
 	}
 

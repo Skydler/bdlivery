@@ -1,33 +1,20 @@
 package ar.edu.unlp.info.bd2.model;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import org.bson.types.ObjectId;
 
-@Entity
-@Table(name = "Suppliers")
+
 public class Supplier {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
+	private ObjectId id;
 
-	@Column(nullable = false)
 	private String name;
 
-	@Column(nullable = false)
 	private String cuil;
 
-	@Column(nullable = false)
 	private String address;
-
-	@Column(nullable = false)
+	
 	private Float coordX;
 
-	@Column(nullable = false)
 	private Float coordY;
 
 	public Supplier() {}
@@ -40,11 +27,11 @@ public class Supplier {
 		this.coordY = coordY;
 	}
 
-	public Long getId() {
+	public ObjectId getId() {
 		return id;
 	}
 
-	public void setId(Long id) {
+	public void setId(ObjectId id) {
 		this.id = id;
 	}
 

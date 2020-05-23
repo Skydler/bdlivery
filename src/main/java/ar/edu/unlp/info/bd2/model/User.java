@@ -3,36 +3,25 @@ package ar.edu.unlp.info.bd2.model;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Date;
-import javax.persistence.*;
 
-@Entity
-@Table(name = "Users")
+import org.bson.types.ObjectId;
+
 public class User {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
+	private ObjectId id;
 
-	@Column(name = "username", nullable = false)
 	private String username;
 
-	@Column(nullable = false)
 	private String password;
 
-	@Column(nullable = false)
 	private String name;
 
-	@Column(nullable = false)
 	private String email;
 
-	@Temporal(TemporalType.TIMESTAMP)
-	@Column(nullable = false)
 	private Date birthDate;
 
-	@OneToMany(mappedBy = "client", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	private List<Order> orders;
 
-	@OneToMany(mappedBy = "delivery", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	private List<Order> deliveredOrders;
 
 	public User() {
@@ -48,11 +37,11 @@ public class User {
 		this.deliveredOrders = new ArrayList<Order>();
 	}
 
-	public Long getId() {
+	public ObjectId getId() {
 		return id;
 	}
 
-	public void setId(Long id) {
+	public void setId(ObjectId id) {
 		this.id = id;
 	}
 

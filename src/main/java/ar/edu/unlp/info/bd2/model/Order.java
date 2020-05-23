@@ -5,61 +5,31 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Date;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 
-@Entity
-@Table(name = "Orders")
+import org.bson.types.ObjectId;
+
 public class Order {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
+	private ObjectId id;
 
-	@Temporal(TemporalType.TIMESTAMP)
-	@Column(nullable = false)
 	private Date orderDate;
 
-	@Column(nullable = false)
 	private String address;
 
-	@Column(nullable = false)
 	private Float coordX;
 
-	@Column(nullable = false)
 	private Float coordY;
-	
-	@Column(nullable = false)
+
 	private Float amount;
 	
-	@Column(nullable = false)
 	private String currentStatus;
 
-	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-	@JoinColumn(name = "id_item")
 	private List<Item> items;
 
-	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-	@JoinColumn(name = "id_orderStatus")
 	private List<OrderStatus> statesRecord;
 
-	@ManyToOne()
-	@JoinColumn(name = "id_client")
 	private User client;
 
-	@ManyToOne()
-	@JoinColumn(name = "id_delivery")
 	private User delivery;
 
 //	Constants
@@ -85,11 +55,11 @@ public class Order {
 
 	}
 
-	public Long getId() {
+	public ObjectId getId() {
 		return id;
 	}
 
-	public void setId(Long id) {
+	public void setId(ObjectId id) {
 		this.id = id;
 	}
 
