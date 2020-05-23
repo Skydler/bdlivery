@@ -24,27 +24,33 @@ public class DBliveryServiceImpl implements DBliveryService {
 
 	@Override
 	public Product createProduct(String name, Float price, Float weight, Supplier supplier) {
-		// TODO Auto-generated method stub
-		return null;
+		Product prod = new Product(name, price, weight, supplier);
+		prod.setObjectId(new ObjectId());
+		repository.saveProduct(prod);
+		return prod;
 	}
 
 	@Override
 	public Product createProduct(String name, Float price, Float weight, Supplier supplier, Date date) {
-		// TODO Auto-generated method stub
-		return null;
+		Product prod = new Product(name, price, weight, supplier, date);
+		prod.setObjectId(new ObjectId());
+		repository.saveProduct(prod);
+		return prod;
 	}
 
 	@Override
 	public Supplier createSupplier(String name, String cuil, String address, Float coordX, Float coordY) {
-		// TODO Auto-generated method stub
-		return null;
+		Supplier sup = new Supplier(name, cuil, address, coordX, coordY);
+		sup.setObjectId(new ObjectId());
+		repository.saveSupplier(sup);
+		return sup;
 	}
 
 	@Override
 	public User createUser(String email, String password, String username, String name, Date dateOfBirth) {
 		User user = new User(email, password, username, name, dateOfBirth);
 		user.setObjectId(new ObjectId());
-		repository.saveUser("users", user);
+		repository.saveUser(user);
 		return user;
 	}
 
@@ -80,8 +86,10 @@ public class DBliveryServiceImpl implements DBliveryService {
 
 	@Override
 	public Order createOrder(Date dateOfOrder, String address, Float coordX, Float coordY, User client) {
-		// TODO Auto-generated method stub
-		return null;
+		Order ord = new Order(dateOfOrder, address, coordX, coordY, client);
+		ord.setObjectId(new ObjectId());
+		repository.saveOrder(ord);
+		return ord;
 	}
 
 	@Override

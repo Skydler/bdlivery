@@ -25,7 +25,7 @@ public class DBliveryMongoRepository {
 	}
 
 	public MongoDatabase getDb() {
-		return this.client.getDatabase("dblivery");
+		return this.client.getDatabase("bd_grupo8");
 	}
 
 	public <T extends PersistentObject> List<T> getAssociatedObjects(PersistentObject source, Class<T> objectClass,
@@ -38,8 +38,20 @@ public class DBliveryMongoRepository {
 		return stream.collect(Collectors.toList());
 	}
 
-	public void saveUser(String collectionName, User obj) {
-		this.getDb().getCollection(collectionName, User.class).insertOne(obj);
+	public void saveUser(User user) {
+		this.getDb().getCollection("users", User.class).insertOne(user);
+	}
+
+	public void saveProduct(Product prod) {
+		this.getDb().getCollection("products", Product.class).insertOne(prod);
+	}
+
+	public void saveSupplier(Supplier sup) {
+		this.getDb().getCollection("suppliers", Supplier.class).insertOne(sup);
+	}
+
+	public void saveOrder(Order ord) {
+		this.getDb().getCollection("orders", Order.class).insertOne(ord);
 	}
 
 }
