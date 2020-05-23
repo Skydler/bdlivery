@@ -6,7 +6,9 @@ import java.util.Date;
 
 import org.bson.types.ObjectId;
 
-public class User {
+import ar.edu.unlp.info.bd2.mongo.PersistentObject;
+
+public class User implements PersistentObject {
 
 	private ObjectId id;
 
@@ -35,14 +37,6 @@ public class User {
 		this.birthDate = birthDate;
 		this.orders = new ArrayList<Order>();
 		this.deliveredOrders = new ArrayList<Order>();
-	}
-
-	public ObjectId getId() {
-		return id;
-	}
-
-	public void setId(ObjectId id) {
-		this.id = id;
 	}
 
 	public String getUsername() {
@@ -99,6 +93,16 @@ public class User {
 
 	public void setDeliveredOrders(List<Order> deliveredOrders) {
 		this.deliveredOrders = deliveredOrders;
+	}
+
+	@Override
+	public ObjectId getObjectId() {
+		return id;
+	}
+
+	@Override
+	public void setObjectId(ObjectId objectId) {
+		this.id = objectId;
 	}
 
 }

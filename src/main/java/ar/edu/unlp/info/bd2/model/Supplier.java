@@ -2,8 +2,9 @@ package ar.edu.unlp.info.bd2.model;
 
 import org.bson.types.ObjectId;
 
+import ar.edu.unlp.info.bd2.mongo.PersistentObject;
 
-public class Supplier {
+public class Supplier implements PersistentObject {
 
 	private ObjectId id;
 
@@ -12,27 +13,20 @@ public class Supplier {
 	private String cuil;
 
 	private String address;
-	
+
 	private Float coordX;
 
 	private Float coordY;
 
-	public Supplier() {}
-	
+	public Supplier() {
+	}
+
 	public Supplier(String name, String cuil, String address, Float coordX, Float coordY) {
 		this.name = name;
 		this.cuil = cuil;
 		this.address = address;
 		this.coordX = coordX;
 		this.coordY = coordY;
-	}
-
-	public ObjectId getId() {
-		return id;
-	}
-
-	public void setId(ObjectId id) {
-		this.id = id;
 	}
 
 	public String getName() {
@@ -73,6 +67,16 @@ public class Supplier {
 
 	public void setCoordY(Float coordY) {
 		this.coordY = coordY;
+	}
+
+	@Override
+	public ObjectId getObjectId() {
+		return id;
+	}
+
+	@Override
+	public void setObjectId(ObjectId objectId) {
+		this.id = objectId;
 	}
 
 }

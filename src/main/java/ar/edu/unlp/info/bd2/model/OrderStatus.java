@@ -2,10 +2,11 @@ package ar.edu.unlp.info.bd2.model;
 
 import java.util.Date;
 
-
 import org.bson.types.ObjectId;
 
-public class OrderStatus implements Comparable<OrderStatus> {
+import ar.edu.unlp.info.bd2.mongo.PersistentObject;
+
+public class OrderStatus implements Comparable<OrderStatus>, PersistentObject {
 
 	private ObjectId id;
 
@@ -27,14 +28,6 @@ public class OrderStatus implements Comparable<OrderStatus> {
 		this.statusDate = date;
 	}
 
-	public ObjectId getId() {
-		return id;
-	}
-
-	public void setId(ObjectId id) {
-		this.id = id;
-	}
-
 	public String getStatus() {
 		return status;
 	}
@@ -50,15 +43,25 @@ public class OrderStatus implements Comparable<OrderStatus> {
 	public void setStatusDate(Date statusDate) {
 		this.statusDate = statusDate;
 	}
-	
+
 	@Override
 	public int compareTo(OrderStatus ord) {
 		return this.getStatusDate().compareTo(ord.getStatusDate());
 	}
-	
+
 	@Override
 	public String toString() {
 		return "OrderStatus: " + this.getStatus();
+	}
+
+	@Override
+	public ObjectId getObjectId() {
+		return id;
+	}
+
+	@Override
+	public void setObjectId(ObjectId objectId) {
+		this.id = objectId;
 	}
 
 }

@@ -9,7 +9,9 @@ import org.bson.types.ObjectId;
 
 import org.joda.time.LocalDate;
 
-public class Product {
+import ar.edu.unlp.info.bd2.mongo.PersistentObject;
+
+public class Product implements PersistentObject {
 
 	private ObjectId id;
 
@@ -41,14 +43,6 @@ public class Product {
 
 	public Product() {
 
-	}
-
-	public ObjectId getId() {
-		return id;
-	}
-
-	public void setId(ObjectId id) {
-		this.id = id;
 	}
 
 	public String getName() {
@@ -91,7 +85,7 @@ public class Product {
 		Collections.sort(this.prices);
 		return this.prices.get(this.prices.size() - 1);
 	}
-	
+
 	public Float getPriceAt(Date date) {
 		Price price = this.prices.stream().filter(p -> p.isInsidePriceRange(date)).findFirst().get();
 		return price.getValue();
@@ -104,6 +98,20 @@ public class Product {
 		currentPrice.setEndDate(cloned_date);
 		Price newPrice = new Price(value, startDate);
 		this.prices.add(newPrice);
+	}
+
+	@Override
+	public ObjectId getObjectId() {
+		return id;
+	}
+	
+	public ObjectId getId() {
+		return id;
+	}
+
+	@Override
+	public void setObjectId(ObjectId objectId) {
+		this.id = objectId;
 	}
 
 }

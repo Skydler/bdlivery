@@ -1,9 +1,10 @@
 package ar.edu.unlp.info.bd2.model;
 
-
 import org.bson.types.ObjectId;
 
-public class Item {
+import ar.edu.unlp.info.bd2.mongo.PersistentObject;
+
+public class Item implements PersistentObject {
 
 	private ObjectId id;
 
@@ -18,14 +19,6 @@ public class Item {
 
 	public Item() {
 
-	}
-
-	public ObjectId getId() {
-		return id;
-	}
-
-	public void setId(ObjectId id) {
-		this.id = id;
 	}
 
 	public Product getProduct() {
@@ -46,6 +39,16 @@ public class Item {
 
 	public void setQuantity(Long quantity) {
 		this.quantity = quantity;
+	}
+
+	@Override
+	public ObjectId getObjectId() {
+		return id;
+	}
+
+	@Override
+	public void setObjectId(ObjectId objectId) {
+		this.id = objectId;
 	}
 
 }

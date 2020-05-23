@@ -4,10 +4,12 @@ import java.util.Date;
 
 import org.bson.types.ObjectId;
 
-public class Price implements Comparable<Price>{
+import ar.edu.unlp.info.bd2.mongo.PersistentObject;
+
+public class Price implements Comparable<Price>, PersistentObject {
 
 	private ObjectId id;
-	
+
 	private Float value;
 
 	private Date startDate;
@@ -18,17 +20,9 @@ public class Price implements Comparable<Price>{
 		this.value = value;
 		this.startDate = startDate;
 	}
-	
+
 	public Price() {
-		
-	}
 
-	public ObjectId getId() {
-		return id;
-	}
-
-	public void setId(ObjectId id) {
-		this.id = id;
 	}
 
 	public Float getValue() {
@@ -54,17 +48,28 @@ public class Price implements Comparable<Price>{
 	public void setEndDate(Date endDate) {
 		this.endDate = endDate;
 	}
-	
+
 	public boolean isInsidePriceRange(Date date) {
-        if (this.endDate == null) {
-            return this.startDate.before(date);
-        } else {
-            return this.startDate.before(date) && this.endDate.after(date);
-        }
+		if (this.endDate == null) {
+			return this.startDate.before(date);
+		} else {
+			return this.startDate.before(date) && this.endDate.after(date);
+		}
 	}
-	
+
 	@Override
 	public int compareTo(Price price) {
 		return this.value.compareTo(price.getValue());
 	}
+
+	@Override
+	public ObjectId getObjectId() {
+		return id;
+	}
+
+	@Override
+	public void setObjectId(ObjectId objectId) {
+		this.id = objectId;
+	}
+
 }

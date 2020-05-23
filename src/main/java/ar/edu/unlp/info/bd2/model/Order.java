@@ -5,10 +5,11 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Date;
 
-
 import org.bson.types.ObjectId;
 
-public class Order {
+import ar.edu.unlp.info.bd2.mongo.PersistentObject;
+
+public class Order implements PersistentObject {
 
 	private ObjectId id;
 
@@ -21,7 +22,7 @@ public class Order {
 	private Float coordY;
 
 	private Float amount;
-	
+
 	private String currentStatus;
 
 	private List<Item> items;
@@ -53,14 +54,6 @@ public class Order {
 
 	public Order() {
 
-	}
-
-	public ObjectId getId() {
-		return id;
-	}
-
-	public void setId(ObjectId id) {
-		this.id = id;
 	}
 
 	public Date getOrderDate() {
@@ -148,7 +141,7 @@ public class Order {
 	public Float getAmount() {
 		return amount;
 	}
-	
+
 	public void setAmount(Float amount) {
 		this.amount = amount;
 	}
@@ -157,5 +150,19 @@ public class Order {
 		this.items.add(item);
 		this.amount += item.getProduct().getPriceAt(this.orderDate) * item.getQuantity();
 	}
-	
+
+	@Override
+	public ObjectId getObjectId() {
+		return id;
+	}
+
+	@Override
+	public void setObjectId(ObjectId objectId) {
+		this.id = objectId;
+	}
+
+	public ObjectId getId() {
+		return id;
+	}
+
 }
