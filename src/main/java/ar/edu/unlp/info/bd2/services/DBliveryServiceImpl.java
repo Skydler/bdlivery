@@ -96,9 +96,10 @@ public class DBliveryServiceImpl implements DBliveryService {
 
 	@Override
 	public Order createOrder(Date dateOfOrder, String address, Float coordX, Float coordY, User client) {
-		Order ord = new Order(dateOfOrder, address, coordX, coordY, client);
+		Order ord = new Order(dateOfOrder, address, coordX, coordY, null);
 		ord.setObjectId(new ObjectId());
 		repository.saveObject("orders", Order.class, ord);
+		repository.saveAssociation(ord, client, "order_usrClient");
 		return ord;
 	}
 
