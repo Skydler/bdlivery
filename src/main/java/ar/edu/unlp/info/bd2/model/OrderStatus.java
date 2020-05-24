@@ -10,7 +10,7 @@ import ar.edu.unlp.info.bd2.mongo.PersistentObject;
 public class OrderStatus implements Comparable<OrderStatus>, PersistentObject {
 
 	@BsonId
-	private ObjectId id;
+	private ObjectId objectId;
 
 	private String status;
 
@@ -58,12 +58,12 @@ public class OrderStatus implements Comparable<OrderStatus>, PersistentObject {
 
 	@Override
 	public ObjectId getObjectId() {
-		return id;
+		return objectId;
 	}
 
 	@Override
 	public void setObjectId(ObjectId objectId) {
-		this.id = objectId;
+		this.objectId = objectId;
 	}
 
 }

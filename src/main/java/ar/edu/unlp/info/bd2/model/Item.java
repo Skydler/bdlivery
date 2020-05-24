@@ -8,7 +8,7 @@ import ar.edu.unlp.info.bd2.mongo.PersistentObject;
 public class Item implements PersistentObject {
 
 	@BsonId
-	private ObjectId id;
+	private ObjectId objectId;
 
 	private Long quantity;
 
@@ -45,12 +45,12 @@ public class Item implements PersistentObject {
 
 	@Override
 	public ObjectId getObjectId() {
-		return id;
+		return objectId;
 	}
 
 	@Override
 	public void setObjectId(ObjectId objectId) {
-		this.id = objectId;
+		this.objectId = objectId;
 	}
 
 }

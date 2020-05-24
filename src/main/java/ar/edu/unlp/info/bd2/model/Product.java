@@ -16,7 +16,7 @@ import ar.edu.unlp.info.bd2.mongo.PersistentObject;
 public class Product implements PersistentObject {
 
 	@BsonId
-	private ObjectId id;
+	private ObjectId objectId;
 
 	private String name;
 
@@ -81,6 +81,7 @@ public class Product implements PersistentObject {
 		this.supplier = supplier;
 	}
 
+	@BsonIgnore
 	public Float getPrice() {
 		return this.currentPrice().getValue();
 	}
@@ -106,16 +107,17 @@ public class Product implements PersistentObject {
 
 	@Override
 	public ObjectId getObjectId() {
-		return id;
+		return objectId;
 	}
 	
+	@BsonIgnore
 	public ObjectId getId() {
-		return id;
+		return objectId;
 	}
 
 	@Override
 	public void setObjectId(ObjectId objectId) {
-		this.id = objectId;
+		this.objectId = objectId;
 	}
 
 }

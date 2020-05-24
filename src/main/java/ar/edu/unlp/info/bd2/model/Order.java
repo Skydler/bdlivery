@@ -7,6 +7,7 @@ import java.util.Date;
 
 import org.bson.codecs.pojo.annotations.BsonId;
 import org.bson.codecs.pojo.annotations.BsonIgnore;
+import org.bson.codecs.pojo.annotations.BsonProperty;
 import org.bson.types.ObjectId;
 
 import ar.edu.unlp.info.bd2.mongo.PersistentObject;
@@ -14,7 +15,7 @@ import ar.edu.unlp.info.bd2.mongo.PersistentObject;
 public class Order implements PersistentObject {
 
 	@BsonId
-	private ObjectId id;
+	private ObjectId objectId;
 
 	private Date orderDate;
 
@@ -32,7 +33,7 @@ public class Order implements PersistentObject {
 
 	private List<OrderStatus> statesRecord;
 
-	@BsonIgnore
+//	@BsonIgnore
 	private User client;
 
 	@BsonIgnore
@@ -93,10 +94,12 @@ public class Order implements PersistentObject {
 		this.coordY = coordY;
 	}
 
+	@BsonProperty(value = "items")
 	public List<Item> getProducts() {
 		return items;
 	}
 
+	@BsonProperty(value = "items")
 	public void setProducts(ArrayList<Item> items) {
 		this.items = items;
 	}
@@ -134,10 +137,12 @@ public class Order implements PersistentObject {
 		this.delivery = delivery;
 	}
 
+	@BsonIgnore
 	public Boolean isItemsEmpty() {
 		return this.items.isEmpty();
 	}
 
+	@BsonIgnore
 	public OrderStatus getActualStatus() {
 		Collections.sort(this.statesRecord);
 		return this.statesRecord.get(this.statesRecord.size() - 1);
@@ -158,16 +163,16 @@ public class Order implements PersistentObject {
 
 	@Override
 	public ObjectId getObjectId() {
-		return id;
+		return objectId;
 	}
 
 	@Override
 	public void setObjectId(ObjectId objectId) {
-		this.id = objectId;
+		this.objectId = objectId;
 	}
 
 	public ObjectId getId() {
-		return id;
+		return objectId;
 	}
 
 }

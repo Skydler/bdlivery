@@ -10,7 +10,7 @@ import ar.edu.unlp.info.bd2.mongo.PersistentObject;
 public class Price implements Comparable<Price>, PersistentObject {
 
 	@BsonId
-	private ObjectId id;
+	private ObjectId objectId;
 
 	private Float value;
 
@@ -21,7 +21,6 @@ public class Price implements Comparable<Price>, PersistentObject {
 	public Price(Float value, Date startDate) {
 		this.value = value;
 		this.startDate = startDate;
-		this.id = new ObjectId();
 	}
 
 	public Price() {
@@ -67,12 +66,12 @@ public class Price implements Comparable<Price>, PersistentObject {
 
 	@Override
 	public ObjectId getObjectId() {
-		return id;
+		return objectId;
 	}
 
 	@Override
 	public void setObjectId(ObjectId objectId) {
-		this.id = objectId;
+		this.objectId = objectId;
 	}
 
 }

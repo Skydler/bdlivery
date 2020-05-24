@@ -6,6 +6,7 @@ import java.util.Optional;
 
 import org.bson.types.ObjectId;
 
+import ar.edu.unlp.info.bd2.model.Item;
 import ar.edu.unlp.info.bd2.model.Order;
 import ar.edu.unlp.info.bd2.model.OrderStatus;
 import ar.edu.unlp.info.bd2.model.Price;
@@ -26,7 +27,6 @@ public class DBliveryServiceImpl implements DBliveryService {
 	@Override
 	public Product createProduct(String name, Float price, Float weight, Supplier supplier) {
 		Product prod = new Product(name, price, weight, supplier);
-		prod.setObjectId(new ObjectId());
 		repository.saveObject("products", Product.class, prod);
 		repository.saveAssociation(prod, supplier, "product_supplier");
 		return prod;
@@ -34,8 +34,7 @@ public class DBliveryServiceImpl implements DBliveryService {
 
 	@Override
 	public Product createProduct(String name, Float price, Float weight, Supplier supplier, Date date) {
-		Product prod = new Product(name, price, weight, null, date);
-		prod.setObjectId(new ObjectId());
+		Product prod = new Product(name, price, weight, supplier, date);
 		repository.saveObject("products", Product.class, prod);
 		repository.saveAssociation(prod, supplier, "product_supplier");
 		return prod;
@@ -44,7 +43,6 @@ public class DBliveryServiceImpl implements DBliveryService {
 	@Override
 	public Supplier createSupplier(String name, String cuil, String address, Float coordX, Float coordY) {
 		Supplier sup = new Supplier(name, cuil, address, coordX, coordY);
-		sup.setObjectId(new ObjectId());
 		repository.saveObject("suppliers", Supplier.class, sup);
 		return sup;
 	}
@@ -52,7 +50,6 @@ public class DBliveryServiceImpl implements DBliveryService {
 	@Override
 	public User createUser(String email, String password, String username, String name, Date dateOfBirth) {
 		User user = new User(email, password, username, name, dateOfBirth);
-		user.setObjectId(new ObjectId());
 		repository.saveObject("users", User.class, user);
 		return user;
 	}
@@ -96,8 +93,7 @@ public class DBliveryServiceImpl implements DBliveryService {
 
 	@Override
 	public Order createOrder(Date dateOfOrder, String address, Float coordX, Float coordY, User client) {
-		Order ord = new Order(dateOfOrder, address, coordX, coordY, null);
-		ord.setObjectId(new ObjectId());
+		Order ord = new Order(dateOfOrder, address, coordX, coordY, client);
 		repository.saveObject("orders", Order.class, ord);
 		repository.saveAssociation(ord, client, "order_usrClient");
 		return ord;
@@ -105,8 +101,11 @@ public class DBliveryServiceImpl implements DBliveryService {
 
 	@Override
 	public Order addProduct(ObjectId order, Long quantity, Product product) throws DBliveryException {
-		// TODO Auto-generated method stub
-		return null;
+		Item item = new Item(quantity);
+		item.setObjectId(new ObjectId());
+		repository.saveAssociation(item, product, "item_product");
+		Order ord = repository.updateOrder(order, item);
+		return ord;
 	}
 
 	@Override
