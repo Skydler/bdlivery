@@ -2,16 +2,20 @@ package ar.edu.unlp.info.bd2.repositories;
 
 import static com.mongodb.client.model.Aggregates.*;
 import static com.mongodb.client.model.Filters.eq;
-import static com.mongodb.client.model.Filters.regex;
+import static com.mongodb.client.model.Updates.*;
 
 import ar.edu.unlp.info.bd2.model.*;
 import ar.edu.unlp.info.bd2.mongo.*;
 import com.mongodb.client.*;
+import com.mongodb.client.model.FindOneAndUpdateOptions;
+import com.mongodb.client.model.ReturnDocument;
+
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
+import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 
 public class DBliveryMongoRepository {
@@ -38,20 +42,16 @@ public class DBliveryMongoRepository {
 		return stream.collect(Collectors.toList());
 	}
 
-	public void saveUser(User user) {
-		this.getDb().getCollection("users", User.class).insertOne(user);
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	public void saveObject(String collectionName, Class cls, Object obj) {
+		this.getDb().getCollection(collectionName, cls).insertOne(obj);
 	}
 
-	public void saveProduct(Product prod) {
-		this.getDb().getCollection("products", Product.class).insertOne(prod);
-	}
-
-	public void saveSupplier(Supplier sup) {
-		this.getDb().getCollection("suppliers", Supplier.class).insertOne(sup);
-	}
-
-	public void saveOrder(Order ord) {
-		this.getDb().getCollection("orders", Order.class).insertOne(ord);
+	public Product updateProduct(ObjectId id, Price pri) {
+		MongoCollection<Product> collection = this.getDb().getCollection("products", Product.class);
+		FindOneAndUpdateOptions options = new FindOneAndUpdateOptions().returnDocument(ReturnDocument.AFTER);
+		Product prod = collection.findOneAndUpdate(eq("_id", id), addToSet("prices", pri), options);
+		return prod;
 	}
 	
 	public User getUserByUsername(String username) {

@@ -8,6 +8,7 @@ import org.bson.types.ObjectId;
 
 import ar.edu.unlp.info.bd2.model.Order;
 import ar.edu.unlp.info.bd2.model.OrderStatus;
+import ar.edu.unlp.info.bd2.model.Price;
 import ar.edu.unlp.info.bd2.model.Product;
 import ar.edu.unlp.info.bd2.model.Supplier;
 import ar.edu.unlp.info.bd2.model.User;
@@ -26,7 +27,7 @@ public class DBliveryServiceImpl implements DBliveryService {
 	public Product createProduct(String name, Float price, Float weight, Supplier supplier) {
 		Product prod = new Product(name, price, weight, supplier);
 		prod.setObjectId(new ObjectId());
-		repository.saveProduct(prod);
+		repository.saveObject("products", Product.class, prod);
 		return prod;
 	}
 
@@ -34,15 +35,18 @@ public class DBliveryServiceImpl implements DBliveryService {
 	public Product createProduct(String name, Float price, Float weight, Supplier supplier, Date date) {
 		Product prod = new Product(name, price, weight, supplier, date);
 		prod.setObjectId(new ObjectId());
-		repository.saveProduct(prod);
+		repository.saveObject("products", Product.class, prod);
 		return prod;
 	}
 
 	@Override
 	public Supplier createSupplier(String name, String cuil, String address, Float coordX, Float coordY) {
+		// Acá en vez de crear un nuevo supplier hay que agregarlo a un producto
+		// existente pero no se puede
+		// TODO La otra posibilidad es asociarlos mediante la clase Association
 		Supplier sup = new Supplier(name, cuil, address, coordX, coordY);
 		sup.setObjectId(new ObjectId());
-		repository.saveSupplier(sup);
+		repository.saveObject("suppliers", Supplier.class, sup);
 		return sup;
 	}
 
@@ -50,14 +54,15 @@ public class DBliveryServiceImpl implements DBliveryService {
 	public User createUser(String email, String password, String username, String name, Date dateOfBirth) {
 		User user = new User(email, password, username, name, dateOfBirth);
 		user.setObjectId(new ObjectId());
-		repository.saveUser(user);
+		repository.saveObject("users", User.class, user);
 		return user;
 	}
 
 	@Override
 	public Product updateProductPrice(ObjectId id, Float price, Date startDate) throws DBliveryException {
-		// TODO Auto-generated method stub
-		return null;
+		Price pri = new Price(price, startDate);
+		Product prod = repository.updateProduct(id, pri);
+		return prod;
 	}
 
 	@Override
@@ -94,7 +99,7 @@ public class DBliveryServiceImpl implements DBliveryService {
 	public Order createOrder(Date dateOfOrder, String address, Float coordX, Float coordY, User client) {
 		Order ord = new Order(dateOfOrder, address, coordX, coordY, client);
 		ord.setObjectId(new ObjectId());
-		repository.saveOrder(ord);
+		repository.saveObject("orders", Order.class, ord);
 		return ord;
 	}
 

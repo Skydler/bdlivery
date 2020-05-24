@@ -21,6 +21,7 @@ public class Price implements Comparable<Price>, PersistentObject {
 	public Price(Float value, Date startDate) {
 		this.value = value;
 		this.startDate = startDate;
+		this.id = new ObjectId();
 	}
 
 	public Price() {
