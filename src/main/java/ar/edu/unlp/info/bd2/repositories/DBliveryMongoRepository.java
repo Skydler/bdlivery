@@ -65,4 +65,15 @@ public class DBliveryMongoRepository {
 		return this.getDb().getCollection("users", User.class).find(eq("email", email)).first();
 	}
 
+	public Order updateOrder(ObjectId id, Item item) {
+		MongoCollection<Order> collection = this.getDb().getCollection("orders", Order.class);
+		FindOneAndUpdateOptions options = new FindOneAndUpdateOptions().returnDocument(ReturnDocument.AFTER);
+		Order ord = collection.findOneAndUpdate(eq("_id", id), addToSet("items", item), options);
+		return ord;
+	}
+
+	public <T> T findById(String collectionName, Class<T> cls, ObjectId id) {
+		return this.getDb().getCollection(collectionName, cls).find(eq("_id", id)).first();
+	}
+
 }
