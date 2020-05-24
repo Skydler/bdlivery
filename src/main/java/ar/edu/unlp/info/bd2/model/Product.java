@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
+import org.bson.codecs.pojo.annotations.BsonId;
 import org.bson.types.ObjectId;
 
 import org.joda.time.LocalDate;
@@ -13,6 +14,7 @@ import ar.edu.unlp.info.bd2.mongo.PersistentObject;
 
 public class Product implements PersistentObject {
 
+	@BsonId
 	private ObjectId id;
 
 	private String name;
