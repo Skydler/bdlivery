@@ -42,8 +42,7 @@ public class DBliveryMongoRepository {
 		return stream.collect(Collectors.toList());
 	}
 
-	@SuppressWarnings({ "rawtypes", "unchecked" })
-	public void saveObject(String collectionName, Class cls, Object obj) {
+	public <T> void saveObject(String collectionName, Class<T> cls, T obj) {
 		this.getDb().getCollection(collectionName, cls).insertOne(obj);
 	}
 

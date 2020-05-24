@@ -28,22 +28,21 @@ public class DBliveryServiceImpl implements DBliveryService {
 		Product prod = new Product(name, price, weight, supplier);
 		prod.setObjectId(new ObjectId());
 		repository.saveObject("products", Product.class, prod);
+		repository.saveAssociation(prod, supplier, "product_supplier");
 		return prod;
 	}
 
 	@Override
 	public Product createProduct(String name, Float price, Float weight, Supplier supplier, Date date) {
-		Product prod = new Product(name, price, weight, supplier, date);
+		Product prod = new Product(name, price, weight, null, date);
 		prod.setObjectId(new ObjectId());
 		repository.saveObject("products", Product.class, prod);
+		repository.saveAssociation(prod, supplier, "product_supplier");
 		return prod;
 	}
 
 	@Override
 	public Supplier createSupplier(String name, String cuil, String address, Float coordX, Float coordY) {
-		// Acá en vez de crear un nuevo supplier hay que agregarlo a un producto
-		// existente pero no se puede
-		// TODO La otra posibilidad es asociarlos mediante la clase Association
 		Supplier sup = new Supplier(name, cuil, address, coordX, coordY);
 		sup.setObjectId(new ObjectId());
 		repository.saveObject("suppliers", Supplier.class, sup);

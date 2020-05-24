@@ -6,6 +6,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.bson.codecs.pojo.annotations.BsonId;
+import org.bson.codecs.pojo.annotations.BsonIgnore;
 import org.bson.types.ObjectId;
 
 import org.joda.time.LocalDate;
@@ -21,6 +22,7 @@ public class Product implements PersistentObject {
 
 	private Float weight;
 
+	@BsonIgnore
 	private Supplier supplier;
 
 	private List<Price> prices;
