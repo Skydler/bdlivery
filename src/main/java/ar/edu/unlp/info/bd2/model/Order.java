@@ -36,7 +36,7 @@ public class Order implements PersistentObject {
 //	@BsonIgnore
 	private User client;
 
-	@BsonIgnore
+//	@BsonIgnore
 	private User delivery;
 
 //	Constants
@@ -129,10 +129,12 @@ public class Order implements PersistentObject {
 		this.client = client;
 	}
 
+	@BsonProperty(value = "delivery")
 	public User getDeliveryUser() {
 		return delivery;
 	}
 
+	@BsonProperty(value = "delivery")
 	public void setDeliveryUser(User delivery) {
 		this.delivery = delivery;
 	}

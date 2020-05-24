@@ -20,6 +20,8 @@ public class DBliveryServiceImpl implements DBliveryService {
 
 	private DBliveryMongoRepository repository;
 
+	private static final String ORDER_NOT_FOUND = "No existe la orden para el id dado";
+
 	public DBliveryServiceImpl(DBliveryMongoRepository repository) {
 		this.repository = repository;
 	}
@@ -104,14 +106,23 @@ public class DBliveryServiceImpl implements DBliveryService {
 		Item item = new Item(quantity);
 		item.setObjectId(new ObjectId());
 		repository.saveAssociation(item, product, "item_product");
-		Order ord = repository.updateOrder(order, item);
+		Order ord = repository.addItemToOrder(order, item);
 		return ord;
 	}
 
 	@Override
 	public Order deliverOrder(ObjectId order, User deliveryUser) throws DBliveryException {
-		// TODO Auto-generated method stub
-		return null;
+		Order actualOrder = this.getOrderById(order)
+				.orElseThrow(() -> new DBliveryException(DBliveryServiceImpl.ORDER_NOT_FOUND));
+		if (!this.canDeliver(order)) {
+			throw new DBliveryException("The order can't be delivered");
+		} else {
+			actualOrder.setDeliveryUser(deliveryUser);
+			actualOrder.getStatus().add(new OrderStatus(Order.SENDING));
+			actualOrder.setCurrentStatus(Order.SENDING);
+		}
+		repository.updateStatusOrder(order, actualOrder);
+		return actualOrder;
 	}
 
 	@Override
@@ -164,8 +175,9 @@ public class DBliveryServiceImpl implements DBliveryService {
 
 	@Override
 	public boolean canDeliver(ObjectId order) throws DBliveryException {
-		// TODO Auto-generated method stub
-		return false;
+		Order actualOrder = this.getOrderById(order)
+				.orElseThrow(() -> new DBliveryException(DBliveryServiceImpl.ORDER_NOT_FOUND));
+		return !actualOrder.isItemsEmpty() && actualOrder.getActualStatus().getStatus().equals(Order.PENDING);
 	}
 
 	@Override

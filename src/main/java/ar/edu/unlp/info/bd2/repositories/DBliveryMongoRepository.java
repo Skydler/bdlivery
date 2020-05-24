@@ -65,7 +65,7 @@ public class DBliveryMongoRepository {
 		return this.getDb().getCollection("users", User.class).find(eq("email", email)).first();
 	}
 
-	public Order updateOrder(ObjectId id, Item item) {
+	public Order addItemToOrder(ObjectId id, Item item) {
 		MongoCollection<Order> collection = this.getDb().getCollection("orders", Order.class);
 		FindOneAndUpdateOptions options = new FindOneAndUpdateOptions().returnDocument(ReturnDocument.AFTER);
 		Order ord = collection.findOneAndUpdate(eq("_id", id), addToSet("items", item), options);
@@ -74,6 +74,12 @@ public class DBliveryMongoRepository {
 
 	public <T> T findById(String collectionName, Class<T> cls, ObjectId id) {
 		return this.getDb().getCollection(collectionName, cls).find(eq("_id", id)).first();
+	}
+
+	public void updateStatusOrder(ObjectId id, Order ord) {
+		MongoCollection<Order> collection = this.getDb().getCollection("orders", Order.class);
+		collection.findOneAndUpdate(eq("_id", id), combine(set("delivery", ord.getDeliveryUser()),
+				addToSet("status", ord.getActualStatus()), set("currentStatus", ord.getCurrentStatus())));
 	}
 
 }
