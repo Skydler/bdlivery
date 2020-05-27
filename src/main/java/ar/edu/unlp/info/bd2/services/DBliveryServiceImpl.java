@@ -61,20 +61,26 @@ public class DBliveryServiceImpl implements DBliveryService {
 	}
 
 	@Override
+	//M
 	public Optional<User> getUserById(ObjectId id) {
-		// TODO Auto-generated method stub
+		/*User user = repository.getUserByEmail(email);
+		return user;*/
 		return null;
 	}
 
 	@Override
+	//M
 	public Optional<User> getUserByEmail(String email) {
-		// TODO Auto-generated method stub
+		/*User user = repository.getUserByEmail(email);
+		return user;*/
 		return null;
 	}
 
 	@Override
+	//M
 	public Optional<User> getUserByUsername(String username) {
-		// TODO Auto-generated method stub
+		/*User user = repository.getUserByUsername(username);
+		return user;*/
 		return null;
 	}
 
@@ -111,36 +117,42 @@ public class DBliveryServiceImpl implements DBliveryService {
 	}
 
 	@Override
+	//M
 	public Order cancelOrder(ObjectId order) throws DBliveryException {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
+	//M
 	public Order cancelOrder(ObjectId order, Date date) throws DBliveryException {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
+	//M
 	public Order finishOrder(ObjectId order) throws DBliveryException {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
+	//M
 	public Order finishOrder(ObjectId order, Date date) throws DBliveryException {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
+	//M
 	public boolean canCancel(ObjectId order) throws DBliveryException {
 		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override
+	//M
 	public boolean canFinish(ObjectId id) throws DBliveryException {
 		// TODO Auto-generated method stub
 		return false;
@@ -153,12 +165,14 @@ public class DBliveryServiceImpl implements DBliveryService {
 	}
 
 	@Override
+	//M
 	public OrderStatus getActualStatus(ObjectId order) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
+	//M
 	public List<Product> getProductsByName(String name) {
 		// TODO Auto-generated method stub
 		return null;

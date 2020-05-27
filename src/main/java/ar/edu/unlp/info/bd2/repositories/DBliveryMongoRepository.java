@@ -53,5 +53,17 @@ public class DBliveryMongoRepository {
 	public void saveOrder(Order ord) {
 		this.getDb().getCollection("orders", Order.class).insertOne(ord);
 	}
+	
+	public User getUserByUsername(String username) {
+		return this.getDb().getCollection("users", User.class).find(eq("username", username)).first();
+	}
+	
+	/*public User getUserById(ObjectId id) {
+		return this.getDb().getCollection("users", User.class).find(eq("id", id)).first();
+	}*/
+	
+	public User getUserByEmail(String email) {
+		return this.getDb().getCollection("users", User.class).find(eq("email", email)).first();
+	}
 
 }
