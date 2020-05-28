@@ -7,6 +7,7 @@ import static com.mongodb.client.model.Updates.*;
 import ar.edu.unlp.info.bd2.model.*;
 import ar.edu.unlp.info.bd2.mongo.*;
 import com.mongodb.client.*;
+import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.FindOneAndUpdateOptions;
 import com.mongodb.client.model.ReturnDocument;
 
@@ -79,12 +80,10 @@ public class DBliveryMongoRepository {
 	}
 
 	public List<Product> findProductsByName(String name) {
-		/*
-		 * ArrayList<Product> prods = new ArrayList<Product>(); FindIterable<Product>
-		 * allProds = this.getDb().getCollection("products", Product.class).find( { name
-		 * : { $regex: /name/ } } ); allProds.into(prods); return prods; }
-		 */
-		return null;
+		List<Product> products = new ArrayList<Product>();
+		FindIterable<Product> collection = this.getDb().getCollection("products", Product.class)
+				.find(Filters.regex("name", name));
+		return collection.into(products);
 	}
 
 }
