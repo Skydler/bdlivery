@@ -262,32 +262,28 @@ public class DBliveryServiceImpl implements DBliveryService, DBliveryStatisticsS
 
 	@Override
 	public List<Order> getDeliveredOrdersForUser(String username) {
-		// TODO Auto-generated method stub
-		return null;
+		User usr = repository.getUserByAttribute("username", username);
+		return repository.getOrdersOfTypeAssociatedWith("Delivered", usr.getObjectId());
 	}
 
 	@Override
 	public Product getBestSellingProduct() {
-		// TODO Auto-generated method stub
-		return null;
+		return repository.getBestSellingProduct();
 	}
 
 	@Override
 	public List<Product> getProductsOnePrice() {
-		// TODO Auto-generated method stub
-		return null;
+		return repository.getProductsOnePrice();
 	}
 
 	@Override
 	public List<Product> getSoldProductsOn(Date day) {
-		// TODO Auto-generated method stub
-		return null;
+		return repository.getSoldProductsOn(day);
 	}
 
 	@Override
 	public Product getMaxWeigth() {
-		// TODO Auto-generated method stub
-		return null;
+		return repository.getMaxWeigth();
 	}
 
 	@Override
