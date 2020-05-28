@@ -64,27 +64,24 @@ public class DBliveryServiceImpl implements DBliveryService {
 	}
 
 	@Override
-	//M
+	// M
 	public Optional<User> getUserById(ObjectId id) {
-		/*User user = repository.getUserByEmail(email);
-		return user;*/
-		return null;
+		User user = repository.getUserById(id);
+		return Optional.of(user);
 	}
 
 	@Override
-	//M
+	// M
 	public Optional<User> getUserByEmail(String email) {
-		/*User user = repository.getUserByEmail(email);
-		return user;*/
-		return null;
+		User user = repository.getUserByEmail(email);
+		return Optional.of(user);
 	}
 
 	@Override
-	//M
+	// M
 	public Optional<User> getUserByUsername(String username) {
-		/*User user = repository.getUserByUsername(username);
-		return user;*/
-		return null;
+		User user = repository.getUserByUsername(username);
+		return Optional.of(user);
 	}
 
 	@Override
@@ -132,42 +129,42 @@ public class DBliveryServiceImpl implements DBliveryService {
 	}
 
 	@Override
-	//M
+	// M
 	public Order cancelOrder(ObjectId order) throws DBliveryException {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	//M
+	// M
 	public Order cancelOrder(ObjectId order, Date date) throws DBliveryException {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	//M
+	// M
 	public Order finishOrder(ObjectId order) throws DBliveryException {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	//M
+	// M
 	public Order finishOrder(ObjectId order, Date date) throws DBliveryException {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	//M
+	// M
 	public boolean canCancel(ObjectId order) throws DBliveryException {
 		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override
-	//M
+	// M
 	public boolean canFinish(ObjectId id) throws DBliveryException {
 		// TODO Auto-generated method stub
 		return false;
@@ -181,14 +178,14 @@ public class DBliveryServiceImpl implements DBliveryService {
 	}
 
 	@Override
-	//M
+	// M
 	public OrderStatus getActualStatus(ObjectId order) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	//M
+	// M
 	public List<Product> getProductsByName(String name) {
 		// TODO Auto-generated method stub
 		return null;

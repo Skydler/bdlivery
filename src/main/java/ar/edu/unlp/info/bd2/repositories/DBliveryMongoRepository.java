@@ -52,15 +52,15 @@ public class DBliveryMongoRepository {
 		Product prod = collection.findOneAndUpdate(eq("_id", id), addToSet("prices", pri), options);
 		return prod;
 	}
-	
+
 	public User getUserByUsername(String username) {
 		return this.getDb().getCollection("users", User.class).find(eq("username", username)).first();
 	}
-	
-	/*public User getUserById(ObjectId id) {
-		return this.getDb().getCollection("users", User.class).find(eq("id", id)).first();
-	}*/
-	
+
+	public User getUserById(ObjectId id) {
+		return this.getDb().getCollection("users", User.class).find(eq("_id", id)).first();
+	}
+
 	public User getUserByEmail(String email) {
 		return this.getDb().getCollection("users", User.class).find(eq("email", email)).first();
 	}
