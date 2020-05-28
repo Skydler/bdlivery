@@ -66,7 +66,7 @@ public class DBliveryServiceImpl implements DBliveryService {
 	@Override
 	// M
 	public Optional<User> getUserById(ObjectId id) {
-		User user = repository.getUserById(id);
+		User user = repository.findById("users", User.class, id);
 		return Optional.of(user);
 	}
 
