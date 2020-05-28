@@ -34,7 +34,7 @@ public class DBliveryMongoTestCase {
 
 	@BeforeEach
 	public void setUp() {
-		this.client.getDatabase("bd_grupo8").drop();
+		this.client.getDatabase("bd2_grupo8").drop();
 	}
 
 	@Test

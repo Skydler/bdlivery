@@ -59,28 +59,28 @@ public class DBliveryServiceImpl implements DBliveryService, DBliveryStatisticsS
 	@Override
 	public Product updateProductPrice(ObjectId id, Float price, Date startDate) throws DBliveryException {
 		Price pri = new Price(price, startDate);
-		Product prod = repository.updateProduct(id, pri);
+		Product prod = repository.updateProductPrice(id, pri);
 		return prod;
 	}
 
 	@Override
-	// M
+
 	public Optional<User> getUserById(ObjectId id) {
 		User user = repository.findById("users", User.class, id);
 		return Optional.of(user);
 	}
 
 	@Override
-	// M
+
 	public Optional<User> getUserByEmail(String email) {
-		User user = repository.getUserByEmail(email);
+		User user = repository.getUserByAttribute("email", email);
 		return Optional.of(user);
 	}
 
 	@Override
-	// M
+
 	public Optional<User> getUserByUsername(String username) {
-		User user = repository.getUserByUsername(username);
+		User user = repository.getUserByAttribute("username", username);
 		return Optional.of(user);
 	}
 
@@ -140,7 +140,7 @@ public class DBliveryServiceImpl implements DBliveryService, DBliveryStatisticsS
 	}
 
 	@Override
-	// M
+
 	public Order cancelOrder(ObjectId order) throws DBliveryException {
 		Order actOrder = this.getOrderById(order)
 				.orElseThrow(() -> new DBliveryException(DBliveryServiceImpl.ORDER_NOT_FOUND));
@@ -155,7 +155,7 @@ public class DBliveryServiceImpl implements DBliveryService, DBliveryStatisticsS
 	}
 
 	@Override
-	// M
+
 	public Order cancelOrder(ObjectId order, Date date) throws DBliveryException {
 		Order actOrder = this.getOrderById(order)
 				.orElseThrow(() -> new DBliveryException(DBliveryServiceImpl.ORDER_NOT_FOUND));
@@ -170,7 +170,7 @@ public class DBliveryServiceImpl implements DBliveryService, DBliveryStatisticsS
 	}
 
 	@Override
-	// M
+
 	public Order finishOrder(ObjectId order) throws DBliveryException {
 		Order actOrder = this.getOrderById(order)
 				.orElseThrow(() -> new DBliveryException(DBliveryServiceImpl.ORDER_NOT_FOUND));
@@ -185,7 +185,7 @@ public class DBliveryServiceImpl implements DBliveryService, DBliveryStatisticsS
 	}
 
 	@Override
-	// M
+
 	public Order finishOrder(ObjectId order, Date date) throws DBliveryException {
 		Order actOrder = this.getOrderById(order)
 				.orElseThrow(() -> new DBliveryException(DBliveryServiceImpl.ORDER_NOT_FOUND));
@@ -200,7 +200,6 @@ public class DBliveryServiceImpl implements DBliveryService, DBliveryStatisticsS
 	}
 
 	@Override
-	// M
 	public boolean canCancel(ObjectId order) throws DBliveryException {
 		Order actOrder = this.getOrderById(order)
 				.orElseThrow(() -> new DBliveryException(DBliveryServiceImpl.ORDER_NOT_FOUND));
@@ -208,7 +207,7 @@ public class DBliveryServiceImpl implements DBliveryService, DBliveryStatisticsS
 	}
 
 	@Override
-	// M
+
 	public boolean canFinish(ObjectId id) throws DBliveryException {
 		Order actOrder = this.getOrderById(id)
 				.orElseThrow(() -> new DBliveryException(DBliveryServiceImpl.ORDER_NOT_FOUND));
@@ -223,40 +222,37 @@ public class DBliveryServiceImpl implements DBliveryService, DBliveryStatisticsS
 	}
 
 	@Override
-	// M
+
 	public OrderStatus getActualStatus(ObjectId order) {
 		Order actOrder = this.getOrderById(order).get();
 		return actOrder.getActualStatus();
 	}
 
 	@Override
-	// M
+
 	public List<Product> getProductsByName(String name) {
-		return repository.findProductsByName(name);
+		return repository.findProductsLikeName(name);
 	}
 
 	@Override
 	public List<Order> getAllOrdersMadeByUser(String username) throws DBliveryException {
-		// TODO Auto-generated method stub
-		return null;
+		User usr = repository.getUserByAttribute("username", username);
+		return repository.getObjectsAssociatedWith(usr.getObjectId(), Order.class, "order_usrClient", "orders");
 	}
 
 	@Override
 	public List<Supplier> getTopNSuppliersInSentOrders(int n) {
-		// TODO Auto-generated method stub
-		return null;
+		return repository.getTopNSuppliersInSentOrders(n);
 	}
 
 	@Override
 	public List<Order> getPendingOrders() {
-		// TODO Auto-generated method stub
-		return null;
+		return repository.getOrdersWithCurrentStatus("Pending");
 	}
 
 	@Override
 	public List<Order> getSentOrders() {
-		// TODO Auto-generated method stub
-		return null;
+		return repository.getOrdersWithCurrentStatus("Sending");
 	}
 
 	@Override
