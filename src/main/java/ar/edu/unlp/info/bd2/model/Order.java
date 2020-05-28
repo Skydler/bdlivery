@@ -33,10 +33,10 @@ public class Order implements PersistentObject {
 
 	private List<OrderStatus> statesRecord;
 
-//	@BsonIgnore
+	@BsonIgnore
 	private User client;
 
-//	@BsonIgnore
+	@BsonIgnore
 	private User delivery;
 
 //	Constants

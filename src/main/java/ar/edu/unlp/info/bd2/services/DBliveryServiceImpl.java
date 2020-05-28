@@ -13,6 +13,7 @@ import ar.edu.unlp.info.bd2.model.Price;
 import ar.edu.unlp.info.bd2.model.Product;
 import ar.edu.unlp.info.bd2.model.Supplier;
 import ar.edu.unlp.info.bd2.model.User;
+import ar.edu.unlp.info.bd2.mongo.Association;
 import ar.edu.unlp.info.bd2.repositories.DBliveryException;
 import ar.edu.unlp.info.bd2.repositories.DBliveryMongoRepository;
 
@@ -87,6 +88,8 @@ public class DBliveryServiceImpl implements DBliveryService {
 	@Override
 	public Optional<Order> getOrderById(ObjectId id) {
 		Order ord = repository.findById("orders", Order.class, id);
+		List<User> users = repository.getAssociatedObjects(ord, User.class, "order_usrClient", "users");
+		ord.setClient(users.get(0));
 		return Optional.of(ord);
 	}
 
