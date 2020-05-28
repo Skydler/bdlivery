@@ -1,26 +1,21 @@
 package ar.edu.unlp.info.bd2.repositories;
 
 import static com.mongodb.client.model.Aggregates.*;
-import static com.mongodb.client.model.Filters.eq;
+import static com.mongodb.client.model.Filters.*;
 import static com.mongodb.client.model.Updates.*;
 
 import ar.edu.unlp.info.bd2.model.*;
 import ar.edu.unlp.info.bd2.mongo.*;
 
-import com.mongodb.BasicDBObject;
 import com.mongodb.client.*;
-import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.FindOneAndUpdateOptions;
 import com.mongodb.client.model.ReturnDocument;
 import com.mongodb.client.model.Sorts;
-import com.mongodb.client.model.Sorts.*;
-
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
-import org.bson.Document;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -29,13 +24,15 @@ public class DBliveryMongoRepository {
 	@Autowired
 	private MongoClient client;
 
+	public MongoDatabase getDb() {
+		return this.client.getDatabase("bd2_grupo8");
+	}
+
+	// Generic Methods
+
 	public void saveAssociation(PersistentObject source, PersistentObject destination, String associationName) {
 		Association association = new Association(source.getObjectId(), destination.getObjectId());
 		this.getDb().getCollection(associationName, Association.class).insertOne(association);
-	}
-
-	public MongoDatabase getDb() {
-		return this.client.getDatabase("bd2_grupo8");
 	}
 
 	public <T extends PersistentObject> List<T> getAssociatedObjects(PersistentObject source, Class<T> objectClass,
@@ -53,15 +50,27 @@ public class DBliveryMongoRepository {
 		this.getDb().getCollection(collectionName, cls).insertOne(obj);
 	}
 
+	public <T> T findById(String collectionName, Class<T> cls, ObjectId id) {
+		return this.getDb().getCollection(collectionName, cls).find(eq("_id", id)).first();
+	}
+
+	// =============== Primera Parte ==================
+
+	public User getUserByAttribute(String attribute, String value) {
+		return this.getDb().getCollection("users", User.class).find(eq(attribute, value)).first();
+	}
+
+	public List<Product> findProductsLikeName(String name) {
+		FindIterable<Product> collection = this.getDb().getCollection("products", Product.class)
+				.find(regex("name", name));
+		return collection.into(new ArrayList<Product>());
+	}
+
 	public Product updateProductPrice(ObjectId id, Price pri) {
 		MongoCollection<Product> collection = this.getDb().getCollection("products", Product.class);
 		FindOneAndUpdateOptions options = new FindOneAndUpdateOptions().returnDocument(ReturnDocument.AFTER);
 		Product prod = collection.findOneAndUpdate(eq("_id", id), addToSet("prices", pri), options);
 		return prod;
-	}
-
-	public User getUserByAttribute(String attribute, String value) {
-		return this.getDb().getCollection("users", User.class).find(eq(attribute, value)).first();
 	}
 
 	public Order addItemToOrder(ObjectId id, Item item) {
@@ -71,20 +80,10 @@ public class DBliveryMongoRepository {
 		return ord;
 	}
 
-	public <T> T findById(String collectionName, Class<T> cls, ObjectId id) {
-		return this.getDb().getCollection(collectionName, cls).find(eq("_id", id)).first();
-	}
-
 	public void updateStatusOrder(ObjectId id, Order ord) {
 		MongoCollection<Order> collection = this.getDb().getCollection("orders", Order.class);
 		collection.findOneAndUpdate(eq("_id", id), combine(set("delivery", ord.getDeliveryUser()),
 				addToSet("status", ord.getActualStatus()), set("currentStatus", ord.getCurrentStatus())));
-	}
-
-	public List<Product> findProductsLikeName(String name) {
-		FindIterable<Product> collection = this.getDb().getCollection("products", Product.class)
-				.find(Filters.regex("name", name));
-		return collection.into(new ArrayList<Product>());
 	}
 
 	// =============== Segunda Parte ==================
@@ -122,6 +121,12 @@ public class DBliveryMongoRepository {
 	public List<Order> getOrdersWithCurrentStatus(String status) {
 		FindIterable<Order> collection = this.getDb().getCollection("orders", Order.class)
 				.find(eq("currentStatus", status));
+		return collection.into(new ArrayList<Order>());
+	}
+
+	public List<Order> getDeliveredOrdersInPeriod(Date startDate, Date endDate) {
+		FindIterable<Order> collection = this.getDb().getCollection("orders", Order.class)
+				.find(and(eq("currentStatus", "Delivered"), gte("orderDate", startDate), lte("orderDate", endDate)));
 		return collection.into(new ArrayList<Order>());
 	}
 
