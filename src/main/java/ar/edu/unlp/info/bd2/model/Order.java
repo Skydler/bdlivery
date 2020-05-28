@@ -10,6 +10,9 @@ import org.bson.codecs.pojo.annotations.BsonIgnore;
 import org.bson.codecs.pojo.annotations.BsonProperty;
 import org.bson.types.ObjectId;
 
+import com.mongodb.client.model.geojson.Point;
+import com.mongodb.client.model.geojson.Position;
+
 import ar.edu.unlp.info.bd2.mongo.PersistentObject;
 
 public class Order implements PersistentObject {
@@ -24,6 +27,8 @@ public class Order implements PersistentObject {
 	private Float coordX;
 
 	private Float coordY;
+
+	private Point position;
 
 	private Float amount;
 
@@ -50,6 +55,8 @@ public class Order implements PersistentObject {
 		this.address = address;
 		this.coordX = coordX;
 		this.coordY = coordY;
+		Position pos = new Position(coordX, coordY);
+		this.setPosition(new Point(pos));
 		this.client = client;
 		this.amount = 0F;
 		this.currentStatus = Order.PENDING;
@@ -92,6 +99,14 @@ public class Order implements PersistentObject {
 
 	public void setCoordY(Float coordY) {
 		this.coordY = coordY;
+	}
+
+	public Point getPosition() {
+		return position;
+	}
+
+	public void setPosition(Point position) {
+		this.position = position;
 	}
 
 	@BsonProperty(value = "items")
