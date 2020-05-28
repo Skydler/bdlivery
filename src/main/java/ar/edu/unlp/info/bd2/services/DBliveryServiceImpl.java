@@ -131,8 +131,16 @@ public class DBliveryServiceImpl implements DBliveryService {
 	@Override
 	// M
 	public Order cancelOrder(ObjectId order) throws DBliveryException {
-		// TODO Auto-generated method stub
-		return null;
+		Order actOrder = this.getOrderById(order)
+				.orElseThrow(() -> new DBliveryException(DBliveryServiceImpl.ORDER_NOT_FOUND));
+		if (!this.canCancel(order)) {
+			throw new DBliveryException("The order can't be cancelled");
+		} else {
+			actOrder.getStatus().add(new OrderStatus(Order.CANCELLED));
+			actOrder.setCurrentStatus(Order.CANCELLED);
+		}
+		repository.updateStatusOrder(order, actOrder);
+		return actOrder;
 	}
 
 	@Override
@@ -145,8 +153,16 @@ public class DBliveryServiceImpl implements DBliveryService {
 	@Override
 	// M
 	public Order finishOrder(ObjectId order) throws DBliveryException {
-		// TODO Auto-generated method stub
-		return null;
+		Order actOrder = this.getOrderById(order)
+				.orElseThrow(() -> new DBliveryException(DBliveryServiceImpl.ORDER_NOT_FOUND));
+		if (!this.canFinish(order)) {
+			throw new DBliveryException("The order can't be finished");
+		} else {
+			actOrder.getStatus().add(new OrderStatus(Order.DELIVERED));
+			actOrder.setCurrentStatus(Order.DELIVERED);
+		}
+		repository.updateStatusOrder(order, actOrder);
+		return actOrder;
 	}
 
 	@Override
@@ -159,15 +175,17 @@ public class DBliveryServiceImpl implements DBliveryService {
 	@Override
 	// M
 	public boolean canCancel(ObjectId order) throws DBliveryException {
-		// TODO Auto-generated method stub
-		return false;
+		Order actOrder = this.getOrderById(order)
+				.orElseThrow(() -> new DBliveryException(DBliveryServiceImpl.ORDER_NOT_FOUND));
+		return actOrder.getActualStatus().getStatus().equals(Order.PENDING);
 	}
 
 	@Override
 	// M
 	public boolean canFinish(ObjectId id) throws DBliveryException {
-		// TODO Auto-generated method stub
-		return false;
+		Order actOrder = this.getOrderById(id)
+				.orElseThrow(() -> new DBliveryException(DBliveryServiceImpl.ORDER_NOT_FOUND));
+		return !actOrder.isItemsEmpty() && actOrder.getActualStatus().getStatus().equals(Order.SENDING);
 	}
 
 	@Override
@@ -180,15 +198,14 @@ public class DBliveryServiceImpl implements DBliveryService {
 	@Override
 	// M
 	public OrderStatus getActualStatus(ObjectId order) {
-		// TODO Auto-generated method stub
-		return null;
+		Order actOrder = this.getOrderById(order).get();
+		return actOrder.getActualStatus();
 	}
 
 	@Override
 	// M
 	public List<Product> getProductsByName(String name) {
-		// TODO Auto-generated method stub
-		return null;
+		return repository.findProductsByName(name);
 	}
 
 }

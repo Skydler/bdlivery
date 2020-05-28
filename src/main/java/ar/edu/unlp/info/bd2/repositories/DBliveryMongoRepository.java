@@ -81,5 +81,14 @@ public class DBliveryMongoRepository {
 		collection.findOneAndUpdate(eq("_id", id), combine(set("delivery", ord.getDeliveryUser()),
 				addToSet("status", ord.getActualStatus()), set("currentStatus", ord.getCurrentStatus())));
 	}
+	
+	public List<Product> findProductsByName(String name){
+		/*ArrayList<Product> prods = new ArrayList<Product>();
+		FindIterable<Product> allProds = this.getDb().getCollection("products", Product.class).find( { name : { $regex: /name/ } } );
+		allProds.into(prods);
+		return prods;
+	}*/
+		return null;
+	}
 
 }
