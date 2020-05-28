@@ -288,8 +288,7 @@ public class DBliveryServiceImpl implements DBliveryService, DBliveryStatisticsS
 
 	@Override
 	public List<Order> getOrderNearPlazaMoreno() {
-		// TODO Auto-generated method stub
-		return null;
+		return repository.getOrderNearPlazaMoreno();
 	}
 
 }

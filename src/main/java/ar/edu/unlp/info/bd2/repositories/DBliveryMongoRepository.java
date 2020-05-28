@@ -4,6 +4,7 @@ import static com.mongodb.client.model.Aggregates.*;
 import static com.mongodb.client.model.Filters.*;
 import static com.mongodb.client.model.Updates.*;
 import static com.mongodb.client.model.Sorts.*;
+import static com.mongodb.client.model.Indexes.geo2dsphere;
 
 import ar.edu.unlp.info.bd2.model.*;
 import ar.edu.unlp.info.bd2.mongo.*;
@@ -11,6 +12,9 @@ import ar.edu.unlp.info.bd2.mongo.*;
 import com.mongodb.client.*;
 import com.mongodb.client.model.FindOneAndUpdateOptions;
 import com.mongodb.client.model.ReturnDocument;
+import com.mongodb.client.model.geojson.Point;
+import com.mongodb.client.model.geojson.Position;
+
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -171,6 +175,13 @@ public class DBliveryMongoRepository {
 		AggregateIterable<Product> iterable = this.getDb().getCollection("products", Product.class)
 				.aggregate(Arrays.asList(sort(descending("weight")), limit(1)));
 		return iterable.first();
+	}
+
+	public List<Order> getOrderNearPlazaMoreno() {
+		Point pos = new Point(new Position(-34.921236, -57.954571));
+		FindIterable<Order> iterable = this.getDb().getCollection("orders", Order.class)
+				.find(near("position", pos, 400D, 0D));
+		return iterable.into(new ArrayList<Order>());
 	}
 
 }
