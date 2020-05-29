@@ -64,21 +64,18 @@ public class DBliveryServiceImpl implements DBliveryService, DBliveryStatisticsS
 	}
 
 	@Override
-
 	public Optional<User> getUserById(ObjectId id) {
 		User user = repository.findById("users", User.class, id);
 		return Optional.of(user);
 	}
 
 	@Override
-
 	public Optional<User> getUserByEmail(String email) {
 		User user = repository.getUserByAttribute("email", email);
 		return Optional.of(user);
 	}
 
 	@Override
-
 	public Optional<User> getUserByUsername(String username) {
 		User user = repository.getUserByAttribute("username", username);
 		return Optional.of(user);
@@ -140,7 +137,6 @@ public class DBliveryServiceImpl implements DBliveryService, DBliveryStatisticsS
 	}
 
 	@Override
-
 	public Order cancelOrder(ObjectId order) throws DBliveryException {
 		Order actOrder = this.getOrderById(order)
 				.orElseThrow(() -> new DBliveryException(DBliveryServiceImpl.ORDER_NOT_FOUND));
@@ -155,7 +151,6 @@ public class DBliveryServiceImpl implements DBliveryService, DBliveryStatisticsS
 	}
 
 	@Override
-
 	public Order cancelOrder(ObjectId order, Date date) throws DBliveryException {
 		Order actOrder = this.getOrderById(order)
 				.orElseThrow(() -> new DBliveryException(DBliveryServiceImpl.ORDER_NOT_FOUND));
@@ -170,7 +165,6 @@ public class DBliveryServiceImpl implements DBliveryService, DBliveryStatisticsS
 	}
 
 	@Override
-
 	public Order finishOrder(ObjectId order) throws DBliveryException {
 		Order actOrder = this.getOrderById(order)
 				.orElseThrow(() -> new DBliveryException(DBliveryServiceImpl.ORDER_NOT_FOUND));
@@ -185,7 +179,6 @@ public class DBliveryServiceImpl implements DBliveryService, DBliveryStatisticsS
 	}
 
 	@Override
-
 	public Order finishOrder(ObjectId order, Date date) throws DBliveryException {
 		Order actOrder = this.getOrderById(order)
 				.orElseThrow(() -> new DBliveryException(DBliveryServiceImpl.ORDER_NOT_FOUND));
@@ -207,7 +200,6 @@ public class DBliveryServiceImpl implements DBliveryService, DBliveryStatisticsS
 	}
 
 	@Override
-
 	public boolean canFinish(ObjectId id) throws DBliveryException {
 		Order actOrder = this.getOrderById(id)
 				.orElseThrow(() -> new DBliveryException(DBliveryServiceImpl.ORDER_NOT_FOUND));
@@ -222,24 +214,23 @@ public class DBliveryServiceImpl implements DBliveryService, DBliveryStatisticsS
 	}
 
 	@Override
-
 	public OrderStatus getActualStatus(ObjectId order) {
 		Order actOrder = this.getOrderById(order).get();
 		return actOrder.getActualStatus();
 	}
 
 	@Override
-
 	public List<Product> getProductsByName(String name) {
 		List<Product> prods = repository.findProductsLikeName(name);
-		return repository.getProductsWithAssociation(prods);
+		return repository.setSuppliersOfProducts(prods);
 		
 	}
 
 	@Override
 	public List<Order> getAllOrdersMadeByUser(String username) throws DBliveryException {
-		User usr = repository.getUserByAttribute("username", username);
-		return repository.getObjectsAssociatedWith(usr.getObjectId(), Order.class, "order_usrClient", "orders");
+		User usr = this.getUserByUsername(username).orElseThrow(() -> new DBliveryException("No se ha encontrado un usuario con ese nombre"));
+		List<Order> orders = repository.getObjectsAssociatedWith(usr.getObjectId(), Order.class, "order_usrClient", "orders");
+		return repository.setClientsOfOrders(orders);
 	}
 
 	@Override
@@ -250,25 +241,26 @@ public class DBliveryServiceImpl implements DBliveryService, DBliveryStatisticsS
 	@Override
 	public List<Order> getPendingOrders() {
 		List<Order> ords = repository.getOrdersWithCurrentStatus("Pending");
-		return repository.getOrdersWithAssociation(ords);
+		return repository.setClientsOfOrders(ords);
 	}
 
 	@Override
 	public List<Order> getSentOrders() {
 		List<Order> ords = repository.getOrdersWithCurrentStatus("Sending");
-		return repository.getOrdersWithAssociation(ords);
+		return repository.setClientsOfOrders(ords);
 	}
 
 	@Override
 	public List<Order> getDeliveredOrdersInPeriod(Date startDate, Date endDate) {
 		List<Order> ords = repository.getDeliveredOrdersInPeriod(startDate, endDate);
-		return repository.getOrdersWithAssociation(ords);
+		return repository.setClientsOfOrders(ords);
 	}
 
 	@Override
 	public List<Order> getDeliveredOrdersForUser(String username) {
 		User usr = repository.getUserByAttribute("username", username);
-		return repository.getOrdersOfTypeAssociatedWith("Delivered", usr.getObjectId());
+		List<Order> ords = repository.getOrdersOfTypeAssociatedWith("Delivered", usr.getObjectId());
+		return repository.setClientsOfOrders(ords);
 	}
 
 	@Override
@@ -282,13 +274,13 @@ public class DBliveryServiceImpl implements DBliveryService, DBliveryStatisticsS
 	@Override
 	public List<Product> getProductsOnePrice() {
 		List<Product> prods = repository.getProductsOnePrice();
-		return repository.getProductsWithAssociation(prods);
+		return repository.setSuppliersOfProducts(prods);
 	}
 
 	@Override
 	public List<Product> getSoldProductsOn(Date day) {
 		List<Product> prods = repository.getSoldProductsOn(day);
-		return repository.getProductsWithAssociation(prods);
+		return repository.setSuppliersOfProducts(prods);
 	}
 
 	@Override
@@ -302,7 +294,7 @@ public class DBliveryServiceImpl implements DBliveryService, DBliveryStatisticsS
 	@Override
 	public List<Order> getOrderNearPlazaMoreno() {
 		List<Order> ords = repository.getOrderNearPlazaMoreno();
-		return repository.getOrdersWithAssociation(ords);
+		return repository.setClientsOfOrders(ords);
 	}
 
 }

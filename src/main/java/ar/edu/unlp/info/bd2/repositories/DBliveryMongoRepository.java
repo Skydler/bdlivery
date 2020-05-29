@@ -4,7 +4,7 @@ import static com.mongodb.client.model.Aggregates.*;
 import static com.mongodb.client.model.Filters.*;
 import static com.mongodb.client.model.Updates.*;
 import static com.mongodb.client.model.Sorts.*;
-import static com.mongodb.client.model.Indexes.geo2dsphere;
+import static com.mongodb.client.model.Accumulators.sum;
 
 import ar.edu.unlp.info.bd2.model.*;
 import ar.edu.unlp.info.bd2.mongo.*;
@@ -115,14 +115,19 @@ public class DBliveryMongoRepository {
 	// =============== Segunda Parte ==================
 
 	public List<Supplier> getTopNSuppliersInSentOrders(int n) {
-		AggregateIterable<Order> iterable = this.getDb().getCollection("orders", Order.class)
+		AggregateIterable<Supplier> iterable = this.getDb().getCollection("orders", Supplier.class)
 				.aggregate(Arrays.asList(match(eq("currentStatus", "Sending")), unwind("$items"), replaceRoot("$items"),
-						sort(descending("quantity")), limit(n)));
+						lookup("item_product", "_id", "source", "_matchAssociation"), unwind("$_matchAssociation"),
+						group("$_matchAssociation.destination", sum("total_product_quantity", "$quantity")),
+						lookup("products", "_id", "_id", "_product"), unwind("$_product"),
+						lookup("product_supplier", "_product._id", "source", "_supplier"), unwind("$_supplier"),
+						group("$_supplier.destination", sum("total_supplier_quantity", "$total_product_quantity")),
+						sort(descending("total_supplier_quantity")), limit(n),
+						lookup("suppliers", "_id", "_id", "supplier"), unwind("$supplier"), replaceRoot("$supplier")));
 
-		List<Product> filtered_prods = this.getAssociatedObjects(iterable, Product.class, "item_product", "products");
-		List<Supplier> filtered_suppliers = this.getAssociatedObjects(filtered_prods, Supplier.class,
-				"product_supplier", "suppliers");
-		return filtered_suppliers;
+		Stream<Supplier> stream = StreamSupport.stream(Spliterators.spliteratorUnknownSize(iterable.iterator(), 0),
+				false);
+		return stream.collect(Collectors.toList());
 	}
 
 	public List<Order> getOrdersWithCurrentStatus(String status) {
@@ -138,10 +143,6 @@ public class DBliveryMongoRepository {
 	}
 
 	public List<Order> getOrdersOfTypeAssociatedWith(String string, ObjectId objectId) {
-		// TODO: Tengo algúna opción que no sea copiar el esquema de
-		// getObjectsAssociatedWith?
-		// TODO: Deberíamos filtrar las ordenes en la BD o en Java? De la segunda forma
-		// se puede reutilizar el getObjectsAssociatedWith
 		AggregateIterable<Order> iterable = this.getDb().getCollection("order_usrClient", Order.class)
 				.aggregate(Arrays.asList(match(eq("destination", objectId)),
 						lookup("orders", "source", "_id", "_matches"), unwind("$_matches"), replaceRoot("$_matches"),
@@ -151,11 +152,14 @@ public class DBliveryMongoRepository {
 	}
 
 	public Product getBestSellingProduct() {
-		AggregateIterable<Item> iterable = this.getDb().getCollection("orders", Item.class).aggregate(
-				Arrays.asList(unwind("$items"), replaceRoot("$items"), sort(descending("quantity")), limit(1)));
-		Item item = iterable.first();
-		List<Product> products = this.getAssociatedObjects(item, Product.class, "item_product", "products");
-		return products.get(0);
+		AggregateIterable<Product> iterable = this.getDb().getCollection("orders", Product.class)
+				.aggregate(Arrays.asList(unwind("$items"), replaceRoot("$items"),
+						lookup("item_product", "_id", "source", "_matchAssociation"), unwind("$_matchAssociation"),
+						group("$_matchAssociation.destination", sum("total_quantity", "$quantity")),
+						sort(descending("total_quantity")), limit(1), lookup("products", "_id", "_id", "_product"),
+						unwind("$_product"), replaceRoot("$_product")));
+		Product prod = iterable.first();
+		return prod;
 	}
 
 	public List<Product> getProductsOnePrice() {
@@ -183,18 +187,19 @@ public class DBliveryMongoRepository {
 				.find(near("position", pos, 400D, 0D));
 		return iterable.into(new ArrayList<Order>());
 	}
-	
-	public List<Order> getOrdersWithAssociation(List<Order> orders){
+
+	public List<Order> setClientsOfOrders(List<Order> orders) {
 		for (int i = 0; i < orders.size(); i++) {
 			List<User> clients = this.getAssociatedObjects(orders.get(i), User.class, "order_usrClient", "users");
 			orders.get(i).setClient(clients.get(0));
 		}
 		return orders;
 	}
-	
-	public List<Product> getProductsWithAssociation(List<Product> products){
+
+	public List<Product> setSuppliersOfProducts(List<Product> products) {
 		for (int i = 0; i < products.size(); i++) {
-			List<Supplier> sups = this.getAssociatedObjects(products.get(i), Supplier.class, "product_supplier", "suppliers");
+			List<Supplier> sups = this.getAssociatedObjects(products.get(i), Supplier.class, "product_supplier",
+					"suppliers");
 			products.get(i).setSupplier(sups.get(0));
 		}
 		return products;
