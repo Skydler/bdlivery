@@ -2,29 +2,49 @@ package ar.edu.unlp.info.bd2.model;
 
 import java.util.Date;
 
-import org.bson.codecs.pojo.annotations.BsonId;
-import org.bson.types.ObjectId;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
-import ar.edu.unlp.info.bd2.mongo.PersistentObject;
+@Entity
+@Table(name = "Prices")
+public class Price implements Comparable<Price>{
 
-public class Price implements Comparable<Price>, PersistentObject {
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long id;
 
-	@BsonId
-	private ObjectId objectId;
-
+	@Column(nullable = false)
 	private Float value;
 
+	@Temporal(TemporalType.TIMESTAMP)
+	@Column(nullable = false)
 	private Date startDate;
 
+	@Temporal(TemporalType.TIMESTAMP)
+	@Column(nullable = true)
 	private Date endDate;
 
 	public Price(Float value, Date startDate) {
 		this.value = value;
 		this.startDate = startDate;
 	}
-
+	
 	public Price() {
+		
+	}
 
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
 	}
 
 	public Float getValue() {
@@ -50,28 +70,17 @@ public class Price implements Comparable<Price>, PersistentObject {
 	public void setEndDate(Date endDate) {
 		this.endDate = endDate;
 	}
-
+	
 	public boolean isInsidePriceRange(Date date) {
-		if (this.endDate == null) {
-			return this.startDate.before(date);
-		} else {
-			return this.startDate.before(date) && this.endDate.after(date);
-		}
+        if (this.endDate == null) {
+            return this.startDate.before(date);
+        } else {
+            return this.startDate.before(date) && this.endDate.after(date);
+        }
 	}
-
+	
 	@Override
 	public int compareTo(Price price) {
 		return this.value.compareTo(price.getValue());
 	}
-
-	@Override
-	public ObjectId getObjectId() {
-		return objectId;
-	}
-
-	@Override
-	public void setObjectId(ObjectId objectId) {
-		this.objectId = objectId;
-	}
-
 }

@@ -1,17 +1,30 @@
+
 package ar.edu.unlp.info.bd2.model;
 
-import org.bson.codecs.pojo.annotations.BsonId;
-import org.bson.types.ObjectId;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
+import javax.persistence.Table;
 
-import ar.edu.unlp.info.bd2.mongo.PersistentObject;
+@Entity
+@Table(name = "Items")
+public class Item {
 
-public class Item implements PersistentObject {
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long id;
 
-	@BsonId
-	private ObjectId objectId;
-
+	@Column(nullable = false)
 	private Long quantity;
 
+	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+	@JoinColumn(name = "id_product")
 	private Product product;
 
 	public Item(Long quantity, Product product) {
@@ -21,6 +34,14 @@ public class Item implements PersistentObject {
 
 	public Item() {
 
+	}
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
 	}
 
 	public Product getProduct() {
@@ -41,16 +62,6 @@ public class Item implements PersistentObject {
 
 	public void setQuantity(Long quantity) {
 		this.quantity = quantity;
-	}
-
-	@Override
-	public ObjectId getObjectId() {
-		return objectId;
-	}
-
-	@Override
-	public void setObjectId(ObjectId objectId) {
-		this.objectId = objectId;
 	}
 
 }

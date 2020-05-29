@@ -5,43 +5,61 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Date;
 
-import org.bson.codecs.pojo.annotations.BsonId;
-import org.bson.codecs.pojo.annotations.BsonIgnore;
-import org.bson.codecs.pojo.annotations.BsonProperty;
-import org.bson.types.ObjectId;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
-import com.mongodb.client.model.geojson.Point;
-import com.mongodb.client.model.geojson.Position;
+@Entity
+@Table(name = "Orders")
+public class Order {
 
-import ar.edu.unlp.info.bd2.mongo.PersistentObject;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long id;
 
-public class Order implements PersistentObject {
-
-	@BsonId
-	private ObjectId objectId;
-
+	@Temporal(TemporalType.TIMESTAMP)
+	@Column(nullable = false)
 	private Date orderDate;
 
+	@Column(nullable = false)
 	private String address;
 
+	@Column(nullable = false)
 	private Float coordX;
 
+	@Column(nullable = false)
 	private Float coordY;
 
-	private Point position;
-
+	@Column(nullable = false)
 	private Float amount;
 
+	@Column(nullable = false)
 	private String currentStatus;
 
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@JoinColumn(name = "id_item")
 	private List<Item> items;
 
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+	@JoinColumn(name = "id_orderStatus")
 	private List<OrderStatus> statesRecord;
 
-	@BsonIgnore
+	@ManyToOne()
+	@JoinColumn(name = "id_client")
 	private User client;
 
-	@BsonIgnore
+	@ManyToOne()
+	@JoinColumn(name = "id_delivery")
 	private User delivery;
 
 //	Constants
@@ -55,8 +73,6 @@ public class Order implements PersistentObject {
 		this.address = address;
 		this.coordX = coordX;
 		this.coordY = coordY;
-		Position pos = new Position(coordX, coordY);
-		this.setPosition(new Point(pos));
 		this.client = client;
 		this.amount = 0F;
 		this.currentStatus = Order.PENDING;
@@ -67,6 +83,14 @@ public class Order implements PersistentObject {
 
 	public Order() {
 
+	}
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
 	}
 
 	public Date getOrderDate() {
@@ -101,20 +125,10 @@ public class Order implements PersistentObject {
 		this.coordY = coordY;
 	}
 
-	public Point getPosition() {
-		return position;
-	}
-
-	public void setPosition(Point position) {
-		this.position = position;
-	}
-
-	@BsonProperty(value = "items")
 	public List<Item> getProducts() {
 		return items;
 	}
 
-	@BsonProperty(value = "items")
 	public void setProducts(ArrayList<Item> items) {
 		this.items = items;
 	}
@@ -144,22 +158,18 @@ public class Order implements PersistentObject {
 		this.client = client;
 	}
 
-	@BsonProperty(value = "delivery")
 	public User getDeliveryUser() {
 		return delivery;
 	}
 
-	@BsonProperty(value = "delivery")
 	public void setDeliveryUser(User delivery) {
 		this.delivery = delivery;
 	}
 
-	@BsonIgnore
 	public Boolean isItemsEmpty() {
 		return this.items.isEmpty();
 	}
 
-	@BsonIgnore
 	public OrderStatus getActualStatus() {
 		Collections.sort(this.statesRecord);
 		return this.statesRecord.get(this.statesRecord.size() - 1);
@@ -176,20 +186,6 @@ public class Order implements PersistentObject {
 	public void addProduct(Item item) {
 		this.items.add(item);
 		this.amount += item.getProduct().getPriceAt(this.orderDate) * item.getQuantity();
-	}
-
-	@Override
-	public ObjectId getObjectId() {
-		return objectId;
-	}
-
-	@Override
-	public void setObjectId(ObjectId objectId) {
-		this.objectId = objectId;
-	}
-
-	public ObjectId getId() {
-		return objectId;
 	}
 
 }

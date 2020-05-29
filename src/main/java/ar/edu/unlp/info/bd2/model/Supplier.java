@@ -1,34 +1,51 @@
 package ar.edu.unlp.info.bd2.model;
 
-import org.bson.codecs.pojo.annotations.BsonId;
-import org.bson.types.ObjectId;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
 
-import ar.edu.unlp.info.bd2.mongo.PersistentObject;
+@Entity
+@Table(name = "Suppliers")
+public class Supplier {
 
-public class Supplier implements PersistentObject {
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long id;
 
-	@BsonId
-	private ObjectId objectId;
-
+	@Column(nullable = false)
 	private String name;
 
+	@Column(nullable = false)
 	private String cuil;
 
+	@Column(nullable = false)
 	private String address;
 
+	@Column(nullable = false)
 	private Float coordX;
 
+	@Column(nullable = false)
 	private Float coordY;
 
-	public Supplier() {
-	}
-
+	public Supplier() {}
+	
 	public Supplier(String name, String cuil, String address, Float coordX, Float coordY) {
 		this.name = name;
 		this.cuil = cuil;
 		this.address = address;
 		this.coordX = coordX;
 		this.coordY = coordY;
+	}
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
 	}
 
 	public String getName() {
@@ -69,16 +86,6 @@ public class Supplier implements PersistentObject {
 
 	public void setCoordY(Float coordY) {
 		this.coordY = coordY;
-	}
-
-	@Override
-	public ObjectId getObjectId() {
-		return objectId;
-	}
-
-	@Override
-	public void setObjectId(ObjectId objectId) {
-		this.objectId = objectId;
 	}
 
 }

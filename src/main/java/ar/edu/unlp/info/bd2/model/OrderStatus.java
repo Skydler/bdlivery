@@ -2,18 +2,28 @@ package ar.edu.unlp.info.bd2.model;
 
 import java.util.Date;
 
-import org.bson.codecs.pojo.annotations.BsonId;
-import org.bson.types.ObjectId;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
-import ar.edu.unlp.info.bd2.mongo.PersistentObject;
+@Entity
+@Table(name = "OrderStatus")
+public class OrderStatus implements Comparable<OrderStatus> {
 
-public class OrderStatus implements Comparable<OrderStatus>, PersistentObject {
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long id;
 
-	@BsonId
-	private ObjectId objectId;
-
+	@Column(nullable = false)
 	private String status;
 
+	@Temporal(TemporalType.TIMESTAMP)
+	@Column(nullable = false)
 	private Date statusDate;
 
 	public OrderStatus() {
@@ -28,6 +38,14 @@ public class OrderStatus implements Comparable<OrderStatus>, PersistentObject {
 	public OrderStatus(String status, Date date) {
 		this.status = status;
 		this.statusDate = date;
+	}
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
 	}
 
 	public String getStatus() {
@@ -45,25 +63,15 @@ public class OrderStatus implements Comparable<OrderStatus>, PersistentObject {
 	public void setStatusDate(Date statusDate) {
 		this.statusDate = statusDate;
 	}
-
+	
 	@Override
 	public int compareTo(OrderStatus ord) {
 		return this.getStatusDate().compareTo(ord.getStatusDate());
 	}
-
+	
 	@Override
 	public String toString() {
 		return "OrderStatus: " + this.getStatus();
-	}
-
-	@Override
-	public ObjectId getObjectId() {
-		return objectId;
-	}
-
-	@Override
-	public void setObjectId(ObjectId objectId) {
-		this.objectId = objectId;
 	}
 
 }

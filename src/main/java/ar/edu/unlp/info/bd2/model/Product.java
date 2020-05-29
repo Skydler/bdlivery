@@ -5,26 +5,40 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
-import org.bson.codecs.pojo.annotations.BsonId;
-import org.bson.codecs.pojo.annotations.BsonIgnore;
-import org.bson.types.ObjectId;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
+import javax.persistence.Table;
 
 import org.joda.time.LocalDate;
 
-import ar.edu.unlp.info.bd2.mongo.PersistentObject;
+@Entity
+@Table(name = "Products")
+public class Product {
 
-public class Product implements PersistentObject {
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long id;
 
-	@BsonId
-	private ObjectId objectId;
-
+	@Column(nullable = false)
 	private String name;
 
+	@Column(nullable = false)
 	private Float weight;
 
-	@BsonIgnore
+	@OneToOne()
+	@JoinColumn(name = "id_supplier", nullable = false)
 	private Supplier supplier;
 
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+	@JoinColumn(name = "id_product", nullable = false)
 	private List<Price> prices;
 
 	public Product(String name, Float currentPrice, Float weight, Supplier supplier) {
@@ -47,6 +61,14 @@ public class Product implements PersistentObject {
 
 	public Product() {
 
+	}
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
 	}
 
 	public String getName() {
@@ -81,7 +103,6 @@ public class Product implements PersistentObject {
 		this.supplier = supplier;
 	}
 
-	@BsonIgnore
 	public Float getPrice() {
 		return this.currentPrice().getValue();
 	}
@@ -90,7 +111,7 @@ public class Product implements PersistentObject {
 		Collections.sort(this.prices);
 		return this.prices.get(this.prices.size() - 1);
 	}
-
+	
 	public Float getPriceAt(Date date) {
 		Price price = this.prices.stream().filter(p -> p.isInsidePriceRange(date)).findFirst().get();
 		return price.getValue();
@@ -103,21 +124,6 @@ public class Product implements PersistentObject {
 		currentPrice.setEndDate(cloned_date);
 		Price newPrice = new Price(value, startDate);
 		this.prices.add(newPrice);
-	}
-
-	@Override
-	public ObjectId getObjectId() {
-		return objectId;
-	}
-	
-	@BsonIgnore
-	public ObjectId getId() {
-		return objectId;
-	}
-
-	@Override
-	public void setObjectId(ObjectId objectId) {
-		this.objectId = objectId;
 	}
 
 }

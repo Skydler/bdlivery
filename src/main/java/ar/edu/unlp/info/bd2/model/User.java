@@ -3,29 +3,36 @@ package ar.edu.unlp.info.bd2.model;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Date;
+import javax.persistence.*;
 
-import org.bson.codecs.pojo.annotations.BsonId;
-import org.bson.types.ObjectId;
+@Entity
+@Table(name = "Users")
+public class User {
 
-import ar.edu.unlp.info.bd2.mongo.PersistentObject;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long id;
 
-public class User implements PersistentObject {
-
-	@BsonId
-	private ObjectId objectId;
-
+	@Column(name = "username", nullable = false)
 	private String username;
 
+	@Column(nullable = false)
 	private String password;
 
+	@Column(nullable = false)
 	private String name;
 
+	@Column(nullable = false)
 	private String email;
 
+	@Temporal(TemporalType.TIMESTAMP)
+	@Column(nullable = false)
 	private Date birthDate;
 
+	@OneToMany(mappedBy = "client", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	private List<Order> orders;
 
+	@OneToMany(mappedBy = "delivery", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	private List<Order> deliveredOrders;
 
 	public User() {
@@ -39,6 +46,14 @@ public class User implements PersistentObject {
 		this.birthDate = birthDate;
 		this.orders = new ArrayList<Order>();
 		this.deliveredOrders = new ArrayList<Order>();
+	}
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
 	}
 
 	public String getUsername() {
@@ -95,16 +110,6 @@ public class User implements PersistentObject {
 
 	public void setDeliveredOrders(List<Order> deliveredOrders) {
 		this.deliveredOrders = deliveredOrders;
-	}
-
-	@Override
-	public ObjectId getObjectId() {
-		return objectId;
-	}
-
-	@Override
-	public void setObjectId(ObjectId objectId) {
-		this.objectId = objectId;
 	}
 
 }
