@@ -127,8 +127,17 @@ public class DBliveryServiceImpl implements DBliveryService {
 
 	@Override
 	public Order deliverOrder(ObjectId order, User deliveryUser, Date date) throws DBliveryException {
-		// TODO Auto-generated method stub
-		return null;
+		Order actualOrder = this.getOrderById(order)
+				.orElseThrow(() -> new DBliveryException(DBliveryServiceImpl.ORDER_NOT_FOUND));
+		if (!this.canDeliver(order)) {
+			throw new DBliveryException("The order can't be delivered");
+		} else {
+			actualOrder.setDeliveryUser(deliveryUser);
+			actualOrder.getStatus().add(new OrderStatus(Order.SENDING, date));
+			actualOrder.setCurrentStatus(Order.SENDING);
+		}
+		repository.updateStatusOrder(order, actualOrder);
+		return actualOrder;
 	}
 
 	@Override
@@ -149,8 +158,16 @@ public class DBliveryServiceImpl implements DBliveryService {
 	@Override
 	// M
 	public Order cancelOrder(ObjectId order, Date date) throws DBliveryException {
-		// TODO Auto-generated method stub
-		return null;
+		Order actOrder = this.getOrderById(order)
+				.orElseThrow(() -> new DBliveryException(DBliveryServiceImpl.ORDER_NOT_FOUND));
+		if (!this.canCancel(order)) {
+			throw new DBliveryException("The order can't be cancelled");
+		} else {
+			actOrder.getStatus().add(new OrderStatus(Order.CANCELLED, date));
+			actOrder.setCurrentStatus(Order.CANCELLED);
+		}
+		repository.updateStatusOrder(order, actOrder);
+		return actOrder;
 	}
 
 	@Override
@@ -171,8 +188,16 @@ public class DBliveryServiceImpl implements DBliveryService {
 	@Override
 	// M
 	public Order finishOrder(ObjectId order, Date date) throws DBliveryException {
-		// TODO Auto-generated method stub
-		return null;
+		Order actOrder = this.getOrderById(order)
+				.orElseThrow(() -> new DBliveryException(DBliveryServiceImpl.ORDER_NOT_FOUND));
+		if (!this.canFinish(order)) {
+			throw new DBliveryException("The order can't be finished");
+		} else {
+			actOrder.getStatus().add(new OrderStatus(Order.DELIVERED, date));
+			actOrder.setCurrentStatus(Order.DELIVERED);
+		}
+		repository.updateStatusOrder(order, actOrder);
+		return actOrder;
 	}
 
 	@Override
