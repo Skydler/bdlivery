@@ -231,7 +231,13 @@ public class DBliveryServiceImpl implements DBliveryService, DBliveryStatisticsS
 	@Override
 
 	public List<Product> getProductsByName(String name) {
-		return repository.findProductsLikeName(name);
+		List<Product> prods = repository.findProductsLikeName(name);
+		for (int i = 0; i < prods.size(); i++) {
+			List<Supplier> sups = repository.getAssociatedObjects(prods.get(i), Supplier.class, "product_supplier", "suppliers");
+			prods.get(i).setSupplier(sups.get(0));
+		}
+		return prods;
+		
 	}
 
 	@Override
@@ -247,17 +253,32 @@ public class DBliveryServiceImpl implements DBliveryService, DBliveryStatisticsS
 
 	@Override
 	public List<Order> getPendingOrders() {
-		return repository.getOrdersWithCurrentStatus("Pending");
+		List<Order> ords = repository.getOrdersWithCurrentStatus("Pending");
+		for (int i = 0; i < ords.size(); i++) {
+			List<User> clients = repository.getAssociatedObjects(ords.get(i), User.class, "order_usrClient", "users");
+			ords.get(i).setClient(clients.get(0));
+		}
+		return ords;
 	}
 
 	@Override
 	public List<Order> getSentOrders() {
-		return repository.getOrdersWithCurrentStatus("Sending");
+		List<Order> ords = repository.getOrdersWithCurrentStatus("Sending");
+		for (int i = 0; i < ords.size(); i++) {
+			List<User> clients = repository.getAssociatedObjects(ords.get(i), User.class, "order_usrClient", "users");
+			ords.get(i).setClient(clients.get(0));
+		}
+		return ords;
 	}
 
 	@Override
 	public List<Order> getDeliveredOrdersInPeriod(Date startDate, Date endDate) {
-		return repository.getDeliveredOrdersInPeriod(startDate, endDate);
+		List<Order> ords = repository.getDeliveredOrdersInPeriod(startDate, endDate);
+		for (int i = 0; i < ords.size(); i++) {
+			List<User> clients = repository.getAssociatedObjects(ords.get(i), User.class, "order_usrClient", "users");
+			ords.get(i).setClient(clients.get(0));
+		}
+		return ords;
 	}
 
 	@Override
@@ -268,27 +289,48 @@ public class DBliveryServiceImpl implements DBliveryService, DBliveryStatisticsS
 
 	@Override
 	public Product getBestSellingProduct() {
-		return repository.getBestSellingProduct();
+		Product prod = repository.getBestSellingProduct();
+		List<Supplier> sups = repository.getAssociatedObjects(prod, Supplier.class, "product_supplier", "suppliers");
+		prod.setSupplier(sups.get(0));
+		return prod;
 	}
 
 	@Override
 	public List<Product> getProductsOnePrice() {
-		return repository.getProductsOnePrice();
+		List<Product> prods = repository.getProductsOnePrice();
+		for (int i = 0; i < prods.size(); i++) {
+			List<Supplier> sups = repository.getAssociatedObjects(prods.get(i), Supplier.class, "product_supplier", "suppliers");
+			prods.get(i).setSupplier(sups.get(0));
+		}
+		return prods;
 	}
 
 	@Override
 	public List<Product> getSoldProductsOn(Date day) {
-		return repository.getSoldProductsOn(day);
+		List<Product> prods = repository.getSoldProductsOn(day);
+		for (int i = 0; i < prods.size(); i++) {
+			List<Supplier> sups = repository.getAssociatedObjects(prods.get(i), Supplier.class, "product_supplier", "suppliers");
+			prods.get(i).setSupplier(sups.get(0));
+		}
+		return prods;
 	}
 
 	@Override
 	public Product getMaxWeigth() {
-		return repository.getMaxWeigth();
+		Product prod = repository.getMaxWeigth();
+		List<Supplier> sups = repository.getAssociatedObjects(prod, Supplier.class, "product_supplier", "suppliers");
+		prod.setSupplier(sups.get(0));
+		return prod;
 	}
 
 	@Override
 	public List<Order> getOrderNearPlazaMoreno() {
-		return repository.getOrderNearPlazaMoreno();
+		List<Order> ords = repository.getOrderNearPlazaMoreno();
+		for (int i = 0; i < ords.size(); i++) {
+			List<User> clients = repository.getAssociatedObjects(ords.get(i), User.class, "order_usrClient", "users");
+			ords.get(i).setClient(clients.get(0));
+		}
+		return ords;
 	}
 
 }
