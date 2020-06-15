@@ -232,11 +232,7 @@ public class DBliveryServiceImpl implements DBliveryService, DBliveryStatisticsS
 
 	public List<Product> getProductsByName(String name) {
 		List<Product> prods = repository.findProductsLikeName(name);
-		for (int i = 0; i < prods.size(); i++) {
-			List<Supplier> sups = repository.getAssociatedObjects(prods.get(i), Supplier.class, "product_supplier", "suppliers");
-			prods.get(i).setSupplier(sups.get(0));
-		}
-		return prods;
+		return repository.getProductsWithAssociation(prods);
 		
 	}
 
@@ -254,31 +250,19 @@ public class DBliveryServiceImpl implements DBliveryService, DBliveryStatisticsS
 	@Override
 	public List<Order> getPendingOrders() {
 		List<Order> ords = repository.getOrdersWithCurrentStatus("Pending");
-		for (int i = 0; i < ords.size(); i++) {
-			List<User> clients = repository.getAssociatedObjects(ords.get(i), User.class, "order_usrClient", "users");
-			ords.get(i).setClient(clients.get(0));
-		}
-		return ords;
+		return repository.getOrdersWithAssociation(ords);
 	}
 
 	@Override
 	public List<Order> getSentOrders() {
 		List<Order> ords = repository.getOrdersWithCurrentStatus("Sending");
-		for (int i = 0; i < ords.size(); i++) {
-			List<User> clients = repository.getAssociatedObjects(ords.get(i), User.class, "order_usrClient", "users");
-			ords.get(i).setClient(clients.get(0));
-		}
-		return ords;
+		return repository.getOrdersWithAssociation(ords);
 	}
 
 	@Override
 	public List<Order> getDeliveredOrdersInPeriod(Date startDate, Date endDate) {
 		List<Order> ords = repository.getDeliveredOrdersInPeriod(startDate, endDate);
-		for (int i = 0; i < ords.size(); i++) {
-			List<User> clients = repository.getAssociatedObjects(ords.get(i), User.class, "order_usrClient", "users");
-			ords.get(i).setClient(clients.get(0));
-		}
-		return ords;
+		return repository.getOrdersWithAssociation(ords);
 	}
 
 	@Override
@@ -298,21 +282,13 @@ public class DBliveryServiceImpl implements DBliveryService, DBliveryStatisticsS
 	@Override
 	public List<Product> getProductsOnePrice() {
 		List<Product> prods = repository.getProductsOnePrice();
-		for (int i = 0; i < prods.size(); i++) {
-			List<Supplier> sups = repository.getAssociatedObjects(prods.get(i), Supplier.class, "product_supplier", "suppliers");
-			prods.get(i).setSupplier(sups.get(0));
-		}
-		return prods;
+		return repository.getProductsWithAssociation(prods);
 	}
 
 	@Override
 	public List<Product> getSoldProductsOn(Date day) {
 		List<Product> prods = repository.getSoldProductsOn(day);
-		for (int i = 0; i < prods.size(); i++) {
-			List<Supplier> sups = repository.getAssociatedObjects(prods.get(i), Supplier.class, "product_supplier", "suppliers");
-			prods.get(i).setSupplier(sups.get(0));
-		}
-		return prods;
+		return repository.getProductsWithAssociation(prods);
 	}
 
 	@Override
@@ -326,11 +302,7 @@ public class DBliveryServiceImpl implements DBliveryService, DBliveryStatisticsS
 	@Override
 	public List<Order> getOrderNearPlazaMoreno() {
 		List<Order> ords = repository.getOrderNearPlazaMoreno();
-		for (int i = 0; i < ords.size(); i++) {
-			List<User> clients = repository.getAssociatedObjects(ords.get(i), User.class, "order_usrClient", "users");
-			ords.get(i).setClient(clients.get(0));
-		}
-		return ords;
+		return repository.getOrdersWithAssociation(ords);
 	}
 
 }

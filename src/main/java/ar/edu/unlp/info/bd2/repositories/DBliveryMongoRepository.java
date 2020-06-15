@@ -183,5 +183,21 @@ public class DBliveryMongoRepository {
 				.find(near("position", pos, 400D, 0D));
 		return iterable.into(new ArrayList<Order>());
 	}
+	
+	public List<Order> getOrdersWithAssociation(List<Order> orders){
+		for (int i = 0; i < orders.size(); i++) {
+			List<User> clients = this.getAssociatedObjects(orders.get(i), User.class, "order_usrClient", "users");
+			orders.get(i).setClient(clients.get(0));
+		}
+		return orders;
+	}
+	
+	public List<Product> getProductsWithAssociation(List<Product> products){
+		for (int i = 0; i < products.size(); i++) {
+			List<Supplier> sups = this.getAssociatedObjects(products.get(i), Supplier.class, "product_supplier", "suppliers");
+			products.get(i).setSupplier(sups.get(0));
+		}
+		return products;
+	}
 
 }
