@@ -4,14 +4,20 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
 import ar.edu.unlp.info.bd2.model.Order;
 import ar.edu.unlp.info.bd2.model.OrderStatus;
 import ar.edu.unlp.info.bd2.model.Product;
 import ar.edu.unlp.info.bd2.model.Supplier;
 import ar.edu.unlp.info.bd2.model.User;
 import ar.edu.unlp.info.bd2.repositories.DBliveryException;
+import ar.edu.unlp.info.bd2.repositories.UserRepository;
 
 public class SpringDataDBliveryService implements DBliveryService, DBliveryStatisticsService {
+
+	@Autowired
+	private UserRepository userRepository;
 
 	@Override
 	public Product getMaxWeigth() {
@@ -81,8 +87,9 @@ public class SpringDataDBliveryService implements DBliveryService, DBliveryStati
 
 	@Override
 	public User createUser(String email, String password, String username, String name, Date dateOfBirth) {
-		// TODO Auto-generated method stub
-		return null;
+		User usr = new User(email, password, username, name, dateOfBirth);
+		userRepository.save(usr);
+		return usr;
 	}
 
 	@Override
