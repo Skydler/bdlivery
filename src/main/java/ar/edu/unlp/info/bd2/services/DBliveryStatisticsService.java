@@ -8,32 +8,29 @@ import ar.edu.unlp.info.bd2.repositories.DBliveryException;
 
 public interface DBliveryStatisticsService {
 
+
+    /**
+     * obtiene el producto más pesado
+     * @return el producto más pesado
+     */
+    Product  getMaxWeigth();
+
     /**
      * Obtiene todas las ordenes realizadas por el usuario con username <code>username</code>
      * @param username
      * @return Una lista de ordenes que satisfagan la condición
-     * @throws DBliveryException
      */
-    List<Order> getAllOrdersMadeByUser(String username) throws DBliveryException;
-
-
-    /**
-     * Obtiene los <code>n</code> proveedores que más productos tienen en ordenes que están siendo enviadas
-     * @param n
-     * @return una lista con los <code>n</code> proveedores que satisfagan la condición
-     */
-    List<Supplier> getTopNSuppliersInSentOrders(int n);
+    List<Order> getAllOrdersMadeByUser(String username);
 
     /**
      * Obtiene el listado de las ordenes pendientes
      */
-    List <Order>  getPendingOrders();
+    List<Order> getPendingOrders();
 
     /**
      * Obtiene el listado de las ordenes enviadas y no entregadas
      */
-    List <Order>  getSentOrders();
-
+    List<Order> getSentOrders();
 
     /**
      * Obtiene todas las ordenes entregadas entre dos fechas
@@ -41,20 +38,14 @@ public interface DBliveryStatisticsService {
      * @param endDate
      * @return una lista con las ordenes que satisfagan la condición
      */
-    List <Order> getDeliveredOrdersInPeriod(Date startDate, Date endDate);
+    List<Order> getDeliveredOrdersInPeriod(Date startDate, Date endDate);
 
     /**
      * Obtiene todas las órdenes entregadas para el cliente con username <code>username</code>
      * @param username
      * @return una lista de ordenes que satisfagan la condición
      */
-    List <Order> getDeliveredOrdersForUser(String username);
-
-    /**
-     * Obtiene el producto con más demanda
-     * @return el producto que satisfaga la condición
-     */
-    Product getBestSellingProduct();
+    List<Order> getDeliveredOrdersForUser(String username);
 
     /**
      * Obtiene los productos que no cambiaron su precio
@@ -67,18 +58,5 @@ public interface DBliveryStatisticsService {
      * @param day
      * @return una lista los productos vendidos
      */
-    List <Product> getSoldProductsOn(Date day);
-
-    /**
-     * obtiene el producto más pesado
-     * @return el producto más pesado
-     */
-    Product getMaxWeigth();
-
-    /**
-     * obtiene las ordenes que fueron realizadas a menos de 400 metros del centro de la plaza moreno.
-     * Sus coordenadas son: [-34.921236,-57.954571]
-     * @return la lista de ordenes que satisfagan la condición
-     */
-    List <Order> getOrderNearPlazaMoreno();
+    List<Product> getSoldProductsOn(Date day);
 }
