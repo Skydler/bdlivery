@@ -11,15 +11,13 @@ import ar.edu.unlp.info.bd2.model.Order;
 
 public interface OrderRepository extends CrudRepository<Order, Long> {
 
-	@Query("SELECT o FROM Order o WHERE o.currentStatus=:status")
-	public List<Order> getOrdersInStatus(@Param("status")String status);
-	
+	public List<Order> findByCurrentStatus(String status);
+
 	@Query("SELECT o FROM User u JOIN u.orders o WHERE u.username=:username")
-	public List<Order> getAllOrdersMadeByUser(@Param("username")String username);
-	
-	@Query("SELECT o FROM Order o WHERE o.currentStatus='Delivered' AND o.orderDate BETWEEN :startDate AND :endDate")
-	public List<Order> getDeliveredOrdersInPeriodDate(@Param("startDate")Date startDate, @Param("endDate")Date endDate);
+	public List<Order> getAllOrdersMadeByUser(@Param("username") String username);
+
+	public List<Order> findByCurrentStatusAndOrderDateBetween(String status, Date startDate, Date endDate);
 
 	@Query("SELECT o FROM Order o JOIN o.client c WHERE c.username = :username AND o.currentStatus='Delivered'")
-	public List<Order> getDeliveredOrdersForUser(@Param("username")String username);
+	public List<Order> getDeliveredOrdersForUser(@Param("username") String username);
 }

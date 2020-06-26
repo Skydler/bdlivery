@@ -20,7 +20,6 @@ import ar.edu.unlp.info.bd2.repositories.SupplierRepository;
 import ar.edu.unlp.info.bd2.repositories.OrderRepository;
 import ar.edu.unlp.info.bd2.repositories.ItemRepository;
 
-
 public class SpringDataDBliveryService implements DBliveryService, DBliveryStatisticsService {
 
 	@Autowired
@@ -49,19 +48,19 @@ public class SpringDataDBliveryService implements DBliveryService, DBliveryStati
 	@Override
 	@Transactional
 	public List<Order> getPendingOrders() {
-		return orderRepository.getOrdersInStatus("Pending");
+		return orderRepository.findByCurrentStatus("Pending");
 	}
 
 	@Override
 	@Transactional
 	public List<Order> getSentOrders() {
-		return orderRepository.getOrdersInStatus("Sending");
+		return orderRepository.findByCurrentStatus("Sending");
 	}
 
 	@Override
 	@Transactional
 	public List<Order> getDeliveredOrdersInPeriod(Date startDate, Date endDate) {
-		return orderRepository.getDeliveredOrdersInPeriodDate(startDate, endDate);
+		return orderRepository.findByCurrentStatusAndOrderDateBetween("Delivered", startDate, endDate);
 	}
 
 	@Override
@@ -286,7 +285,7 @@ public class SpringDataDBliveryService implements DBliveryService, DBliveryStati
 	@Override
 	@Transactional
 	public List<Product> getProductsByName(String name) {
-		return productRepository.findBySimilarName(name);
+		return productRepository.findByNameContaining(name);
 	}
 
 }
