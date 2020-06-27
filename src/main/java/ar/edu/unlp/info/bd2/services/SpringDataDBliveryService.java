@@ -6,6 +6,7 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
+import ar.edu.unlp.info.bd2.model.Item;
 import ar.edu.unlp.info.bd2.model.Order;
 import ar.edu.unlp.info.bd2.model.OrderStatus;
 import ar.edu.unlp.info.bd2.model.Product;
@@ -13,12 +14,24 @@ import ar.edu.unlp.info.bd2.model.Supplier;
 import ar.edu.unlp.info.bd2.model.User;
 import ar.edu.unlp.info.bd2.repositories.DBliveryException;
 import ar.edu.unlp.info.bd2.repositories.UserRepository;
+import ar.edu.unlp.info.bd2.repositories.ProductRepository;
+import ar.edu.unlp.info.bd2.repositories.SupplierRepository;
+import ar.edu.unlp.info.bd2.repositories.OrderRepository;
+import ar.edu.unlp.info.bd2.repositories.ItemRepository;
 
 public class SpringDataDBliveryService implements DBliveryService, DBliveryStatisticsService {
 
 	@Autowired
 	private UserRepository userRepository;
-
+	@Autowired
+	private ProductRepository productRepository;
+	@Autowired
+	private SupplierRepository supplierRepository;
+	@Autowired
+	private OrderRepository orderRepository;
+	@Autowired
+	private ItemRepository itemRepository;
+	
 	@Override
 	public Product getMaxWeigth() {
 		// TODO Auto-generated method stub
@@ -27,20 +40,17 @@ public class SpringDataDBliveryService implements DBliveryService, DBliveryStati
 
 	@Override
 	public List<Order> getAllOrdersMadeByUser(String username) {
-		// TODO Auto-generated method stub
-		return null;
+		return orderRepository.getAllOrdersMadeByUser(username);
 	}
 
 	@Override
 	public List<Order> getPendingOrders() {
-		// TODO Auto-generated method stub
-		return null;
+		return orderRepository.getOrdersInStatus("Pending");
 	}
 
 	@Override
 	public List<Order> getSentOrders() {
-		// TODO Auto-generated method stub
-		return null;
+		return orderRepository.getOrdersInStatus("Delivered");
 	}
 
 	@Override
@@ -63,26 +73,28 @@ public class SpringDataDBliveryService implements DBliveryService, DBliveryStati
 
 	@Override
 	public List<Product> getSoldProductsOn(Date day) {
-		// TODO Auto-generated method stub
-		return null;
+		return productRepository.getSoldProductsOn(day);
 	}
 
 	@Override
 	public Product createProduct(String name, Float price, Float weight, Supplier supplier) {
-		// TODO Auto-generated method stub
-		return null;
+		Product prod = new Product(name, price, weight, supplier);
+		productRepository.save(prod);
+		return prod;
 	}
 
 	@Override
 	public Product createProduct(String name, Float price, Float weight, Supplier supplier, Date date) {
-		// TODO Auto-generated method stub
-		return null;
+		Product prod = new Product(name, price, weight, supplier, date);
+		productRepository.save(prod);
+		return prod;
 	}
 
 	@Override
 	public Supplier createSupplier(String name, String cuil, String address, Float coordX, Float coordY) {
-		// TODO Auto-generated method stub
-		return null;
+		Supplier sup = new Supplier(name, cuil, address, coordX, coordY);
+		supplierRepository.save(sup);
+		return sup;
 	}
 
 	@Override
@@ -94,110 +106,169 @@ public class SpringDataDBliveryService implements DBliveryService, DBliveryStati
 
 	@Override
 	public Product updateProductPrice(Long id, Float price, Date startDate) throws DBliveryException {
-		// TODO Auto-generated method stub
-		return null;
+		Product prod = productRepository.findById(id)
+						.orElseThrow(() -> new DBliveryException("No se encontró el producto"));
+		prod.addPrice(price, startDate);
+		productRepository.save(prod);
+		return prod;
 	}
 
 	@Override
 	public Optional<User> getUserById(Long id) {
-		// TODO Auto-generated method stub
-		return null;
+		return userRepository.findById(id);
 	}
 
 	@Override
 	public Optional<User> getUserByEmail(String email) {
-		// TODO Auto-generated method stub
-		return null;
+		return userRepository.findByEmail(email);
 	}
 
 	@Override
 	public Optional<User> getUserByUsername(String username) {
-		// TODO Auto-generated method stub
-		return null;
+		return userRepository.findByUsername(username);
 	}
 
 	@Override
 	public Optional<Order> getOrderById(Long id) {
-		// TODO Auto-generated method stub
-		return null;
+		return orderRepository.findById(id);
 	}
 
 	@Override
 	public Order createOrder(Date dateOfOrder, String address, Float coordX, Float coordY, User client) {
-		// TODO Auto-generated method stub
-		return null;
+		Order ord = new Order(dateOfOrder, address, coordX, coordY, client);
+		orderRepository.save(ord);
+		return ord;
 	}
 
 	@Override
 	public Order addProduct(Long order, Long quantity, Product product) throws DBliveryException {
-		// TODO Auto-generated method stub
-		return null;
+		Product prod = productRepository.findById(product.getId())
+						.orElseThrow(() -> new DBliveryException("Producto no encontrado"));
+		Order ord = orderRepository.findById(order)
+						.orElseThrow(() -> new DBliveryException("Orden no encontrada"));
+		Item item = new Item(quantity, prod);
+		itemRepository.save(item);
+		ord.addProduct(item);
+		orderRepository.save(ord);
+		return ord;
 	}
 
 	@Override
 	public Order deliverOrder(Long order, User deliveryUser) throws DBliveryException {
-		// TODO Auto-generated method stub
-		return null;
+		Order ord = orderRepository.findById(order)
+					.orElseThrow(() -> new DBliveryException("Orden no encontrada"));
+		if(!this.canDeliver(order)) {
+			throw new DBliveryException("La orden no se puede entregar");
+		} else {
+			ord.setDeliveryUser(deliveryUser);
+			ord.getStatus().add(new OrderStatus(Order.SENDING));
+			ord.setCurrentStatus(Order.SENDING);
+		}
+		orderRepository.save(ord);
+		return ord;
 	}
 
 	@Override
 	public Order deliverOrder(Long order, User deliveryUser, Date date) throws DBliveryException {
-		// TODO Auto-generated method stub
-		return null;
+		Order ord = orderRepository.findById(order)
+				.orElseThrow(() -> new DBliveryException("Orden no encontrada"));
+		if(!this.canDeliver(order)) {
+			throw new DBliveryException("La orden no se puede entregar");
+		} else {
+			ord.setDeliveryUser(deliveryUser);
+			ord.getStatus().add(new OrderStatus(Order.SENDING, date));
+			ord.setCurrentStatus(Order.SENDING);
+		}
+		orderRepository.save(ord);
+		return ord;
 	}
 
 	@Override
 	public Order cancelOrder(Long order) throws DBliveryException {
-		// TODO Auto-generated method stub
-		return null;
+		Order ord = orderRepository.findById(order)
+				.orElseThrow(() -> new DBliveryException("Orden no encontrada"));
+		if(!this.canCancel(order)) {
+			throw new DBliveryException("La orden no se puede cancelar");
+		} else {
+			ord.getStatus().add(new OrderStatus(Order.CANCELLED));
+			ord.setCurrentStatus(Order.CANCELLED);
+		}
+		orderRepository.save(ord);
+		return ord;
 	}
 
 	@Override
 	public Order cancelOrder(Long order, Date date) throws DBliveryException {
-		// TODO Auto-generated method stub
-		return null;
+		Order ord = orderRepository.findById(order)
+				.orElseThrow(() -> new DBliveryException("Orden no encontrada"));
+		if(!this.canCancel(order)) {
+			throw new DBliveryException("La orden no se puede cancelar");
+		} else {
+			ord.getStatus().add(new OrderStatus(Order.CANCELLED, date));
+			ord.setCurrentStatus(Order.CANCELLED);
+		}
+		orderRepository.save(ord);
+		return ord;
 	}
 
 	@Override
 	public Order finishOrder(Long order) throws DBliveryException {
-		// TODO Auto-generated method stub
-		return null;
+		Order ord = orderRepository.findById(order)
+				.orElseThrow(() -> new DBliveryException("Orden no encontrada"));
+		if(!this.canFinish(order)) {
+			throw new DBliveryException("La orden no se puede finalizar");
+		} else {
+			ord.getStatus().add(new OrderStatus(Order.DELIVERED));
+			ord.setCurrentStatus(Order.DELIVERED);
+		}
+		orderRepository.save(ord);
+		return ord;
 	}
 
 	@Override
 	public Order finishOrder(Long order, Date date) throws DBliveryException {
-		// TODO Auto-generated method stub
-		return null;
+		Order ord = orderRepository.findById(order)
+				.orElseThrow(() -> new DBliveryException("Orden no encontrada"));
+		if(!this.canFinish(order)) {
+			throw new DBliveryException("La orden no se puede finalizar");
+		} else {
+			ord.getStatus().add(new OrderStatus(Order.CANCELLED, date));
+			ord.setCurrentStatus(Order.CANCELLED);
+		}
+		orderRepository.save(ord);
+		return ord;
 	}
 
 	@Override
 	public boolean canCancel(Long order) throws DBliveryException {
-		// TODO Auto-generated method stub
-		return false;
+		Order ord = orderRepository.findById(order)
+				.orElseThrow(() -> new DBliveryException("Orden no encontrada"));
+		return ord.getActualStatus().getStatus().equals(Order.PENDING);
 	}
 
 	@Override
 	public boolean canFinish(Long id) throws DBliveryException {
-		// TODO Auto-generated method stub
-		return false;
+		Order ord = orderRepository.findById(id)
+				.orElseThrow(() -> new DBliveryException("Orden no encontrada"));
+		return !ord.isItemsEmpty() && ord.getActualStatus().getStatus().equals(Order.SENDING);
 	}
 
 	@Override
 	public boolean canDeliver(Long order) throws DBliveryException {
-		// TODO Auto-generated method stub
-		return false;
+		Order ord = orderRepository.findById(order)
+				.orElseThrow(() -> new DBliveryException("Orden no encontrada"));
+		return !ord.isItemsEmpty() && ord.getActualStatus().getStatus().equals(Order.PENDING);
 	}
 
 	@Override
 	public OrderStatus getActualStatus(Long order) {
-		// TODO Auto-generated method stub
-		return null;
+		Order ord = orderRepository.findById(order).get();
+		return ord.getActualStatus();
 	}
 
 	@Override
 	public List<Product> getProductsByName(String name) {
-		// TODO Auto-generated method stub
-		return null;
+		return productRepository.findBySimilarName(name);
 	}
 
 }
