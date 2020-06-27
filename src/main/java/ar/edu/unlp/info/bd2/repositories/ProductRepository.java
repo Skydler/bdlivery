@@ -12,7 +12,7 @@ import ar.edu.unlp.info.bd2.model.Product;
 
 public interface ProductRepository extends CrudRepository<Product, Long> {
 	
-	@Query("SELECT p FROM Product p WHERE p.name like:name")
+	@Query("SELECT p FROM Product p WHERE p.name like %:name%")
 	List<Product> findBySimilarName(@Param("name")String name);
 	
 	@Query("SELECT p FROM Order o JOIN o.items i JOIN i.product p WHERE o.orderDate=:day")
