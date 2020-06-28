@@ -73,7 +73,7 @@ public class SpringDataDBliveryService implements DBliveryService, DBliveryStati
 	@Override
 	@Transactional
 	public List<Product> getProductsOnePrice() {
-		return null;
+		return productRepository.getProductsOnePrice();
 	}
 
 	@Override

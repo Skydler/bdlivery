@@ -19,4 +19,7 @@ public interface ProductRepository extends CrudRepository<Product, Long> {
 	
 	@Query("SELECT p FROM Product p WHERE p.weight = (SELECT MAX(prod.weight) FROM Product prod)")
 	Product getMaxWeight();
+	
+	@Query("SELECT p FROM Product p JOIN p.prices price GROUP BY p HAVING COUNT(*) = 1")
+	List<Product> getProductsOnePrice();
 	}

@@ -17,7 +17,7 @@ public interface OrderRepository extends CrudRepository<Order, Long> {
 	@Query("SELECT o FROM User u JOIN u.orders o WHERE u.username=:username")
 	public List<Order> getAllOrdersMadeByUser(@Param("username")String username);
 	
-	@Query("SELECT o FROM Order o WHERE o.currentStatus='Delivered' && o.orderDate BETWEEN :startDate AND :endDate")
+	@Query("SELECT o FROM Order o JOIN o.statesRecord state WHERE state.status='Delivered' && state.statusDate BETWEEN :startDate AND :endDate")
 	public List<Order> getDeliveredOrdersInPeriodDate(@Param("startDate")Date startDate, @Param("endDate")Date endDate);
 
 	@Query("SELECT o FROM USER u JOIN u.orders o WHERE o.currentStatus='Delivered' && u.username=:username")
