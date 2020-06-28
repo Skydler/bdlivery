@@ -37,8 +37,7 @@ public class SpringDataDBliveryService implements DBliveryService, DBliveryStati
 	@Override
 	@Transactional
 	public Product getMaxWeigth() {
-		// TODO Auto-generated method stub
-		return null;
+		return productRepository.getMaxWeight();
 	}
 
 	@Override
@@ -62,21 +61,18 @@ public class SpringDataDBliveryService implements DBliveryService, DBliveryStati
 	@Override
 	@Transactional
 	public List<Order> getDeliveredOrdersInPeriod(Date startDate, Date endDate) {
-		// TODO Auto-generated method stub
-		return null;
+		return orderRepository.getDeliveredOrdersInPeriodDate(startDate, endDate);
 	}
 
 	@Override
 	@Transactional
 	public List<Order> getDeliveredOrdersForUser(String username) {
-		// TODO Auto-generated method stub
-		return null;
+		return orderRepository.getDeliveredOrdersForUser(username);
 	}
 
 	@Override
 	@Transactional
 	public List<Product> getProductsOnePrice() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 

@@ -16,4 +16,7 @@ public interface ProductRepository extends CrudRepository<Product, Long> {
 
 	@Query("SELECT p FROM Order o JOIN o.items i JOIN i.product p WHERE o.orderDate=:day")
 	List<Product> getSoldProductsOn(@Param("day") Date day);
-}
+	
+	@Query("SELECT p FROM Product p WHERE p.weight = (SELECT MAX(prod.weight) FROM Product prod)")
+	Product getMaxWeight();
+	}
