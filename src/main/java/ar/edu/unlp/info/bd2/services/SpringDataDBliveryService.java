@@ -248,8 +248,8 @@ public class SpringDataDBliveryService implements DBliveryService, DBliveryStati
 		if (!this.canFinish(order)) {
 			throw new DBliveryException("La orden no se puede finalizar");
 		} else {
-			ord.getStatus().add(new OrderStatus(Order.CANCELLED, date));
-			ord.setCurrentStatus(Order.CANCELLED);
+			ord.getStatus().add(new OrderStatus(Order.DELIVERED, date));
+			ord.setCurrentStatus(Order.DELIVERED);
 		}
 		orderRepository.save(ord);
 		return ord;
